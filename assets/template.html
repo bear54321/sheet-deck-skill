@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant" data-theme="coral">
+<html lang="zh-Hant" data-theme="street">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -414,6 +414,32 @@ body[data-anim=off] .chartbox{animation:none!important}
 /* ---------------- 簡報風格（工具列「風格」）----------------
    coral＝範本原本的珊瑚扁平風；其他 15 種取材自 Lemo-Opuscar 風格庫（CC BY-NC 4.0），只換 --th-* 變數與少數規則。
    以下通用規則只在非 coral 時生效，所以原本的樣子完全不變。 */
+
+/* ---------------- 青綠街景（預設風格） ---------------- */
+.g-street{display:none}
+:root[data-theme=street] .g-street{display:inline}
+:root[data-theme=street] .g-coral{display:none}
+:root[data-theme=street]{--th-bg:#469C9B;--th-ink:#3E4A4A;--th-ink2:#7F7F7F;--th-sub:#9A9A9A;--th-card:#FFFFFF;--th-line:#DCDCDC;--th-h:#469C9B;--th-grid:rgba(70,156,155,.16);--th-fb:'Noto Serif TC','Songti TC',Georgia,serif;--th-ft:'Noto Serif TC','Songti TC',Georgia,serif;--th-tw:600}
+:root[data-theme=street] :is(.card,.kp,.chartbox){border-width:3px!important;border-radius:12px!important}
+:root[data-theme=street] .hd h2{letter-spacing:3px}
+:root[data-theme=street] .hd>div:last-child{border-bottom:2px solid rgba(70,156,155,.55);padding:0 70px 14px}
+:root[data-theme=street] .hd p{color:#9A9A9A}
+:root[data-theme=street] .hn{width:116px;height:116px;flex:none;border-radius:47% 53% 50% 50%/56% 44% 56% 44%;background:#469C9B;color:#fff!important;font-size:58px;display:flex;align-items:center;justify-content:center}
+:root[data-theme=street] .slide[data-deco=cover] .hd{top:230px;flex-direction:column;gap:0}
+:root[data-theme=street] .slide[data-deco=cover] .hn{display:none}
+:root[data-theme=street] .slide[data-deco=cover] .hd>div:last-child{border:0;padding:0;text-align:center}
+:root[data-theme=street] .slide[data-deco=cover] .hd h2{font-size:116px;line-height:1.2;letter-spacing:6px}
+:root[data-theme=street] .slide[data-deco=cover] .hd p{display:inline-block;margin-top:34px;background:#469C9B;color:#fff;padding:16px 70px;font-size:28px;letter-spacing:6px}
+:root[data-theme=street] mark{color:inherit}
+/* 草輕輕擺動、進場時長出來 */
+.gb{transform-box:fill-box;transform-origin:50% 100%}
+.slide.active .gb{animation:gbUp calc(.8s*var(--spd)) calc((var(--i)*40ms + .2s)*var(--spd)) cubic-bezier(.2,.8,.2,1) both,gbSway 5s calc(var(--i)*-.37s) ease-in-out infinite}
+@keyframes gbUp{from{transform:scaleY(0)}to{transform:none}}
+@keyframes gbSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2.5deg)}}
+.lf{transform-box:fill-box;transform-origin:0 50%}
+.slide.active .g-street .lf{animation:lfIn calc(.5s*var(--spd)) calc((var(--i)*35ms + .4s)*var(--spd)) ease-out both}
+@keyframes lfIn{from{opacity:0}to{opacity:1}}
+.static .gb,.static .lf,.slide.leaving .gb,.slide.leaving .lf,body[data-anim=off] .gb,body[data-anim=off] .lf{animation:none!important}
 #ddTh .menu{left:50%;right:auto;transform:translateX(-50%);width:600px;padding:10px}
 #ddTh.open .menu{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 #themeBox .thh{grid-column:1/-1;font-size:14px;font-weight:700;color:#333;padding:4px 8px 8px}
@@ -608,7 +634,7 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
 <main id="view">
 <div id="stage" data-trans="fade">
 
-<section class="slide" data-deco="content">
+<section class="slide" data-deco="cover">
   <div class="deco"></div>
   <div class="hd"><div class="hn a z" data-ed>1</div><div><h2 class="a l" style="--d:.1s" data-ed>點這裡輸入標題</h2><p class="a l" style="--d:.25s" data-ed>點這裡輸入副標題</p></div></div>
 </section>
@@ -748,7 +774,7 @@ function makeDeco(type,sid){
   out.push(dots(66,560,2,3,40,14,O));
   out.push(dots(1792,680,2,5,40,14,O));
   out.push(`<g class="in-br">${clock(1835,420,58)}</g>`);
-  return `<svg viewBox="0 0 1920 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">${out.join('')}</svg>`;
+  return `<svg viewBox="0 0 1920 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g class="g-coral">${out.join('')}</g><g class="g-street">${streetDeco(type,sid)}</g></svg>`;
 }
 
 
@@ -756,13 +782,13 @@ function makeDeco(type,sid){
 const PLAYER=document.documentElement.dataset.mode==='player';
 const KEY='sheet-deck:'+location.pathname;
 /* ---------------- 簡報風格 ---------------- */
-const THEMES={coral:{n:'珊瑚扁平（原本）',e:'Flat Coral',acc:'#DC9A8B',sw:['#FFFFFF','#DC9A8B','#FFFFFF']},woodcut:{n:'木刻版畫',e:'Woodcut Print',acc:'#A8352B',dark:0,pal:['#17130F', '#6E6250', '#B5652B'],sw:['#EDE3CE', '#17130F', '#F1E8D5']},inkwash:{n:'中國水墨',e:'Chinese Ink Wash',acc:'#B23A2E',dark:0,pal:['#3A3A3A', '#8A857C', '#B9B3A8'],sw:['#F4EFE4', '#D9D4CA', '#1E1E1E']},ukiyoe:{n:'浮世繪',e:'Ukiyo-e',acc:'#C8442E',dark:0,pal:['#233B5C', '#6E9AC0', '#D8B26E'],sw:['#EFE4CC', '#233B5C', '#F3E9D2']},papercut:{n:'紅色窗花剪紙',e:'Red Paper-cut',acc:'#D9A21B',dark:0,pal:['#B3261E', '#7A1A14', '#E8786E'],sw:['#F5EDDC', '#B3261E', '#F7EEDC']},riso:{n:'孔版印刷',e:'Risograph Print',acc:'#0078BF',dark:0,pal:['#FF4FA3', '#FFD100', '#00A95C'],sw:['#F4F0E6', '#FF4FA3', '#F4F0E6']},pop:{n:'普普藝術',e:'Pop Art',acc:'#E2231A',dark:0,pal:['#1E5BD6', '#111111', '#FF8A00'],sw:['#FFE14D', '#111111', '#FFFFFF']},swiss:{n:'瑞士動態排版',e:'Swiss Motion Graphics',acc:'#E30613',dark:0,pal:['#111111', '#8C8C8C', '#C9C9C9'],sw:['#F2F2EE', '#E30613', '#FFFFFF']},bauhaus:{n:'包浩斯幾何',e:'Bauhaus Shapes',acc:'#D62E2E',dark:0,pal:['#1F4E9C', '#F2C230', '#1A1A1A'],sw:['#EFE8D8', '#1F4E9C', '#F2C230']},artdeco:{n:'裝飾藝術',e:'Art Deco',acc:'#D4AF37',dark:1,pal:['#1E9C8C', '#E8D9A8', '#8E7A3A'],sw:['#12161F', '#0A0D13', '#D4AF37']},blueprint:{n:'工程藍圖',e:'Blueprint',acc:'#FFD23F',dark:1,pal:['#EAF2FF', '#8FC1FF', '#FF8A65'],sw:['#1D4F91', '#173F75', '#EAF2FF']},chalk:{n:'黑板粉筆',e:'Chalkboard',acc:'#F5D46B',dark:1,pal:['#F1F1E6', '#8FD3F5', '#F59AB0'],sw:['#25382F', '#1B2A23', '#F1F1E6']},neon:{n:'霓虹燈管',e:'Neon Tubes',acc:'#FF3FA4',dark:1,pal:['#5CF2FF', '#B6FF3F', '#FFD23F'],sw:['#0C0A14', '#130F20', '#5CF2FF']},crt:{n:'CRT 字元終端',e:'CRT ASCII Terminal',acc:'#FFB000',dark:1,pal:['#3DFF7A', '#2BC4FF', '#9DFFB8'],sw:['#050A06', '#08140B', '#3DFF7A']},silent:{n:'1920s 默片',e:'1920s Silent Film',acc:'#C9B27C',dark:1,pal:['#E8E1D0', '#8E8673', '#5E574A'],sw:['#1A1714', '#0E0C0A', '#E8E1D0']},watercolor:{n:'水彩筆刷',e:'Watercolor Brush',acc:'#E8743B',dark:0,pal:['#6EA0CD', '#6EBE96', '#C68FCB'],sw:['#FBF8F2', '#BCD3E6', '#2F5E8C']}};
+const THEMES={street:{n:'青綠街景（預設）',e:'Teal Street',acc:'#469C9B',pal:['#E0A43C','#D35454','#6E9A3E','#7FA8C9','#9C8B7E'],sw:['#469C9B','#FFFFFF','#469C9B']},coral:{n:'珊瑚扁平',e:'Flat Coral',acc:'#DC9A8B',sw:['#FFFFFF','#DC9A8B','#FFFFFF']},woodcut:{n:'木刻版畫',e:'Woodcut Print',acc:'#A8352B',dark:0,pal:['#17130F', '#6E6250', '#B5652B'],sw:['#EDE3CE', '#17130F', '#F1E8D5']},inkwash:{n:'中國水墨',e:'Chinese Ink Wash',acc:'#B23A2E',dark:0,pal:['#3A3A3A', '#8A857C', '#B9B3A8'],sw:['#F4EFE4', '#D9D4CA', '#1E1E1E']},ukiyoe:{n:'浮世繪',e:'Ukiyo-e',acc:'#C8442E',dark:0,pal:['#233B5C', '#6E9AC0', '#D8B26E'],sw:['#EFE4CC', '#233B5C', '#F3E9D2']},papercut:{n:'紅色窗花剪紙',e:'Red Paper-cut',acc:'#D9A21B',dark:0,pal:['#B3261E', '#7A1A14', '#E8786E'],sw:['#F5EDDC', '#B3261E', '#F7EEDC']},riso:{n:'孔版印刷',e:'Risograph Print',acc:'#0078BF',dark:0,pal:['#FF4FA3', '#FFD100', '#00A95C'],sw:['#F4F0E6', '#FF4FA3', '#F4F0E6']},pop:{n:'普普藝術',e:'Pop Art',acc:'#E2231A',dark:0,pal:['#1E5BD6', '#111111', '#FF8A00'],sw:['#FFE14D', '#111111', '#FFFFFF']},swiss:{n:'瑞士動態排版',e:'Swiss Motion Graphics',acc:'#E30613',dark:0,pal:['#111111', '#8C8C8C', '#C9C9C9'],sw:['#F2F2EE', '#E30613', '#FFFFFF']},bauhaus:{n:'包浩斯幾何',e:'Bauhaus Shapes',acc:'#D62E2E',dark:0,pal:['#1F4E9C', '#F2C230', '#1A1A1A'],sw:['#EFE8D8', '#1F4E9C', '#F2C230']},artdeco:{n:'裝飾藝術',e:'Art Deco',acc:'#D4AF37',dark:1,pal:['#1E9C8C', '#E8D9A8', '#8E7A3A'],sw:['#12161F', '#0A0D13', '#D4AF37']},blueprint:{n:'工程藍圖',e:'Blueprint',acc:'#FFD23F',dark:1,pal:['#EAF2FF', '#8FC1FF', '#FF8A65'],sw:['#1D4F91', '#173F75', '#EAF2FF']},chalk:{n:'黑板粉筆',e:'Chalkboard',acc:'#F5D46B',dark:1,pal:['#F1F1E6', '#8FD3F5', '#F59AB0'],sw:['#25382F', '#1B2A23', '#F1F1E6']},neon:{n:'霓虹燈管',e:'Neon Tubes',acc:'#FF3FA4',dark:1,pal:['#5CF2FF', '#B6FF3F', '#FFD23F'],sw:['#0C0A14', '#130F20', '#5CF2FF']},crt:{n:'CRT 字元終端',e:'CRT ASCII Terminal',acc:'#FFB000',dark:1,pal:['#3DFF7A', '#2BC4FF', '#9DFFB8'],sw:['#050A06', '#08140B', '#3DFF7A']},silent:{n:'1920s 默片',e:'1920s Silent Film',acc:'#C9B27C',dark:1,pal:['#E8E1D0', '#8E8673', '#5E574A'],sw:['#1A1714', '#0E0C0A', '#E8E1D0']},watercolor:{n:'水彩筆刷',e:'Watercolor Brush',acc:'#E8743B',dark:0,pal:['#6EA0CD', '#6EBE96', '#C68FCB'],sw:['#FBF8F2', '#BCD3E6', '#2F5E8C']}};
 
 function setTheme(k){if(!THEMES[k])return;S.theme=k;S.accent=THEMES[k].acc;saveS();apply();themeMenu();
   if(typeof renderAllCharts==='function')renderAllCharts();if(typeof thumbsLater==='function')thumbsLater();
   toast('已換成「'+THEMES[k].n+'」風格；主色調可以在右側「格式」再調整',3500)}
-function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const cur=THEMES[S.theme]?S.theme:'coral';
-  box.innerHTML='<div class="thh">簡報風格<small>珊瑚扁平是範本原本的樣子；其他取材自 Lemo-Opuscar 風格庫</small></div>'+Object.entries(THEMES).map(([k,t])=>
+function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const cur=THEMES[S.theme]?S.theme:'street';
+  box.innerHTML='<div class="thh">簡報風格<small>青綠街景是預設；木刻等 15 種取材自 Lemo-Opuscar 風格庫</small></div>'+Object.entries(THEMES).map(([k,t])=>
     `<button data-th="${k}" class="${k===cur?'on':''}"><i class="thsw" style="background:${t.sw[0]}"><b style="background:${t.sw[1]}"><u style="background:${t.sw[2]}"></u><u style="background:${t.sw[2]}"></u></b><em style="background:${t.acc}"></em></i><span>${t.n}<small>${t.e}</small></span></button>`).join('');
   if(!box.dataset.wired){box.dataset.wired=1;const dd=document.getElementById('ddTh');
     document.getElementById('bTheme').onclick=e=>{e.stopPropagation();document.querySelectorAll('.dd.open').forEach(x=>{if(x!==dd)x.classList.remove('open')});dd.classList.toggle('open')};
@@ -773,7 +799,7 @@ function CI(){const c=getComputedStyle(document.documentElement),g=(n,d)=>(c.get
   const m=v=>g('--th-sub',v),gr=v=>g('--th-grid',v);
   return{h:g('--th-ink','#3b3b3b'),b:g('--th-ink2','#555'),c6:m('#666'),c7:m('#777'),c8:m('#888'),ca:m('#aaa'),g1:gr('#F6E4E0'),g2:gr('#EBCFC8'),g3:gr('#F1D8D2'),
     sa:t&&t.dark?['rgba(255,255,255,0)','rgba(255,255,255,.04)']:['#FFFFFF','#FDF3F0'],bd:t&&t.dark?'rgba(0,0,0,.35)':'#fff'}}
-const DEF={theme:'coral',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#DC9A8B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
+const DEF={theme:'street',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#DC9A8B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
 let S=JSON.parse(JSON.stringify(DEF));
 try{const baked=document.documentElement.dataset.settings;if(baked)Object.assign(S,JSON.parse(baked))}catch(e){}
 if(!PLAYER)try{const st=JSON.parse(localStorage.getItem(KEY+':set')||'null');if(st)Object.assign(S,st)}catch(e){}
@@ -789,6 +815,41 @@ Object.keys(EDITS).forEach(k=>{const m=k.match(/^(\d+)-(\d+)$/);if(m){EDITS['s'+
 S.added=S.added||{};delete S.unity;  /* Unity 嵌入功能已移除 */
 const holder=document.getElementById('slideHold')||(()=>{const h=document.createElement('div');h.id='slideHold';h.style.display='none';document.body.appendChild(h);return h})();
 const TPL={};slides.forEach(s=>{TPL[s.dataset.sid]=s.cloneNode(true)});
+/* ---------------- 青綠街景（預設風格）的插圖 ----------------
+   青綠外框＋白色內頁；封面有樹枝、草叢、人行道、房子，內頁只在外框露出一點樹枝。全部用 SVG 畫，沒有外部圖片。 */
+const STR={teal:'#469C9B',walk:'#EADFD3',tile:'#9C8B7E',bark:'#7A4E33',leaf:['#8DB24E','#5E8F3E','#3F6E44','#2F6B6A','#A9C76A']};
+function streetDeco(type,sid){const r=R(sid*131+7),o=[],big=type==='cover';
+  const leafAt=(x,y,a,sz,i)=>{const c=STR.leaf[Math.floor(r()*STR.leaf.length)];
+    return `<path class="lf" style="--i:${i}" d="M0,0 Q${f(sz*.5)},${f(-sz*.32)} ${f(sz)},0 Q${f(sz*.5)},${f(sz*.32)} 0,0Z" fill="${c}" transform="translate(${f(x)},${f(y)}) rotate(${f(a)})"/>`};
+  /* 樹枝：一條主幹＋幾條細枝，枝上長葉子 */
+  const branch=(x0,y0,x1,y1,w,mir,n)=>{let s='';const M=x=>mir?1920-x:x,cx=(x0+x1)/2+(mir?-1:1)*40,cy=(y0+y1)/2+60;
+    s+=`<path d="M${M(x0)},${y0}Q${M(cx)},${cy} ${M(x1)},${y1}" fill="none" stroke="${STR.bark}" stroke-width="${w}" stroke-linecap="round"/>`;
+    for(let k=0;k<n;k++){const t=.25+k*.7/n,u=1-t,px=u*u*x0+2*u*t*cx+t*t*x1,py=u*u*y0+2*u*t*cy+t*t*y1,len=60+r()*90,ang=(r()<.5?-1:1)*(25+r()*30)+(Math.atan2(y1-y0,x1-x0)*180/Math.PI),
+        ex=px+Math.cos(ang*Math.PI/180)*len,ey=py+Math.sin(ang*Math.PI/180)*len;
+      s+=`<path d="M${f(M(px))},${f(py)}L${f(M(ex))},${f(ey)}" stroke="${STR.bark}" stroke-width="${f(w*.45)}" stroke-linecap="round"/>`;
+      for(let q=0;q<7;q++){const tt=.2+q*.12,lx=px+(ex-px)*tt,ly=py+(ey-py)*tt;s+=leafAt(M(lx),ly,(mir?180-ang:ang)+(q%2?55:-55)+(r()-.5)*30,30+r()*18,k*7+q)}}
+    return `<g class="leaf sw-br">${s}</g>`};
+  if(big){
+    o.push(`<rect x="70" y="70" width="1780" height="930" fill="#fff"/>`);
+    /* 人行道 */
+    let walk=`<rect x="0" y="985" width="1920" height="95" fill="${STR.walk}"/><path d="M0,1012H1920" stroke="${STR.tile}" stroke-width="3"/>`;
+    for(let x=-60;x<1980;x+=300)walk+=`<path d="M${x+40},1012L${x-10},1080" stroke="${STR.tile}" stroke-width="3"/>`;
+    o.push(walk);
+    /* 右下的房子（簡單的幾何） */
+    o.push(`<g class="leaf"><rect x="1560" y="560" width="240" height="425" fill="#EBC68A"/><rect x="1550" y="540" width="260" height="30" fill="#B89BD8"/>`+
+      [...Array(12)].map((_,i)=>`<rect x="${1590+(i%3)*68}" y="${600+Math.floor(i/3)*90}" width="34" height="50" fill="#8C6D2E" opacity=".75"/>`).join('')+
+      `<rect x="1420" y="700" width="140" height="285" fill="#9CCBE0"/><rect x="1440" y="730" width="100" height="120" fill="#E8F4FA"/><rect x="1300" y="800" width="120" height="185" fill="#E7B98C"/><rect x="1290" y="780" width="140" height="26" fill="#B86B3E"/></g>`);
+    /* 草叢：底部一排葉片，中間比較矮，不擋到文字 */
+    let g='';for(let i=0;i<70;i++){const x=-20+i*28+r()*16,mid=Math.abs(x-960)<520,h=(mid?50:110)+r()*(mid?60:130),lean=(r()-.5)*60,c=STR.leaf[Math.floor(r()*STR.leaf.length)];
+      g+=`<path class="gb" style="--i:${i%14}" d="M${f(x-12)},990Q${f(x+lean*.3)},${f(990-h*.6)} ${f(x+lean)},${f(990-h)}Q${f(x+lean*.2+8)},${f(990-h*.5)} ${f(x+14)},990Z" fill="${c}"/>`}
+    o.push(`<g class="leaf">${g}</g>`);
+    o.push(branch(-30,360,360,-20,20,false,7)+branch(-30,360,360,-20,20,true,7));
+  }else{
+    o.push(`<rect x="26" y="26" width="1868" height="1028" fill="#fff"/>`);
+    /* 內頁：只在外框角落露出一點樹枝與葉子 */
+    o.push(`<g class="leaf">`+leafAt(30,40,-30,26,0)+leafAt(1890,40,210,26,1)+leafAt(18,1040,20,22,2)+leafAt(1900,1040,160,22,3)+`</g>`);
+  }
+  return o.join('')}
 const BLANK='<section class="slide" data-deco="content"><div class="deco"></div><div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>新的頁面</h2><p class="a l" style="--d:.25s" data-ed>點這裡輸入副標題</p></div></div></section>';
 function makeSlide(sid,from){let el;if(String(from).startsWith('live:')){const w=document.createElement('div');w.innerHTML=livePgHTML(from.slice(5),(S.added[sid]||{}).t);el=w.firstElementChild}else if(String(from).startsWith('pdf:')){const w=document.createElement('div');w.innerHTML=pdfPgHTML(from.slice(4));el=w.firstElementChild}else if(String(from).startsWith('doc:')){const w=document.createElement('div');w.innerHTML=docPgHTML(from.slice(4));el=w.firstElementChild}else if(from==='blank'||!TPL[from]){const w=document.createElement('div');w.innerHTML=BLANK;el=w.firstElementChild}else el=TPL[from].cloneNode(true);
   el.dataset.sid=sid;el.classList.remove('active','leaving','hold','flipped','clipL','clipR');el.querySelectorAll('.chartbox').forEach(b=>b.remove());
@@ -813,7 +874,7 @@ setEditable(!PLAYER);
 
 const hexRgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
 function apply(){
-  const b=document.body,rs=document.documentElement.style;document.documentElement.dataset.theme=THEMES[S.theme]?S.theme:'coral';
+  const b=document.body,rs=document.documentElement.style;document.documentElement.dataset.theme=THEMES[S.theme]?S.theme:'street';
   b.dataset.hl=S.hl;b.dataset.anim=S.anim;b.dataset.leaf=S.leaf;stage.dataset.trans=S.trans;
   rs.setProperty('--accent',S.accent);rs.setProperty('--accent-soft',hexRgba(S.accent,.16));rs.setProperty('--accent-soft2',hexRgba(S.accent,.42));
   rs.setProperty('--spd',S.spd);rs.setProperty('--wc',S.wc);

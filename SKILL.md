@@ -18,7 +18,7 @@ description: 製作「網頁動畫簡報＋演示控制台」：單一 HTML，�
 
 ## 範本結構（template.html）
 
-- 範本只有**一張空白頁**（標題、副標題預留位置），沒有範例資料或圖表；直接用瀏覽器打開就是一份空白簡報。資料頁、文件頁、PDF 摘要頁由 `livePgHTML()`／`docPgHTML()`／`pdfPgHTML()` 產生，要預先放資料頁時照下方「資料頁」的寫法加 `<section>`。
+- 範本只有**一張空白封面頁**（`data-deco="cover"`，標題、副標題預留位置），沒有範例資料或圖表；直接用瀏覽器打開就是一份空白簡報。資料頁、文件頁、PDF 摘要頁由 `livePgHTML()`／`docPgHTML()`／`pdfPgHTML()` 產生，要預先放資料頁時照下方「資料頁」的寫法加 `<section>`。
 - 舞台 1920×1080，等比縮放。每頁是 `<section class="slide" data-sid="s1">`，進場動畫用 `.a` 加 `style="--d:.3s"` 控制延遲。
 - 可編輯文字加 `data-ed`；使用者在畫面上改的字存在 `localStorage`（key 以網址路徑區分），匯出 HTML 時會烘進檔案。
 - 設定預設值在 `const DEF={...}`：
@@ -36,8 +36,9 @@ description: 製作「網頁動畫簡報＋演示控制台」：單一 HTML，�
   - Gemini／OpenAI 的模型清單用金鑰即時讀取（`/models`），存在 localStorage，不寫死型號。
   - 金鑰存 `localStorage['sheet-deck:key:<claude|gemini|openai>']`，**不放進 `S`**，所以不會被匯出。三家 API 都允許瀏覽器直接呼叫，`file://` 也能用。
 - **圖表**：使用者可用「📊 插入圖表」自己加（長條、折線、面積、圓餅、圓環、散佈、雷達、漏斗、橫條），可拖曳、改欄位。時間格式（如 `5:32`）與金額會自動轉數字，「總計」列會被排除。
-- 風格是扁平珊瑚色系（白底、#DC9A8B、#E9A576、#CDA4A4、#4F6B6B、對話框、時鐘裝飾），裝飾由 `makeDeco` 依 `data-deco` 產生。
-- **風格切換**：工具列「🎨 風格」有 16 種（`THEMES`，存在 `S.theme`，預設 `coral`＝原本的珊瑚扁平；另 15 種取材自 Lemo-Opuscar 風格庫，CC BY-NC 4.0，商用要另外確認）。做法是 `<html data-theme>` 換 `--th-*` 變數：通用規則都寫成 `:root:not([data-theme=coral]) …`，所以 coral 外觀不受影響；裝飾顏色用 class（`.dk1`～`.dk5`、`.dkf`），圖表文字與格線用 `CI()`、色盤用 `chartPal()`。新增元件時若寫死顏色，記得在非 coral 規則裡改成 `--th-*`；要給簡報自訂一套外觀時，也是加一個 `THEMES` 項目和對應的 `:root[data-theme=…]` 變數。
+- 珊瑚扁平風格是（白底、#DC9A8B、#E9A576、#CDA4A4、#4F6B6B、對話框、時鐘裝飾），裝飾由 `makeDeco` 依 `data-deco` 產生。
+- **預設風格「青綠街景」**（`street`）：青綠外框＋白色內頁，封面（`data-deco="cover"`）有樹枝、草叢、人行道、房子，內頁只有白色內頁和角落葉子；標題青綠襯線字、下方細線，頁碼是青綠圓塊。插圖由 `streetDeco()` 用 SVG 畫（沒有外部圖片），和珊瑚扁平的裝飾一起放在每頁 SVG 裡，用 `.g-street`／`.g-coral` 依風格切換顯示。
+- **風格切換**：工具列「🎨 風格」有 17 種（`THEMES`，存在 `S.theme`，預設 `street`；`coral`＝原本的珊瑚扁平；另 15 種取材自 Lemo-Opuscar 風格庫，CC BY-NC 4.0，商用要另外確認）。做法是 `<html data-theme>` 換 `--th-*` 變數：通用規則都寫成 `:root:not([data-theme=coral]) …`，所以 coral 外觀不受影響；裝飾顏色用 class（`.dk1`～`.dk5`、`.dkf`），圖表文字與格線用 `CI()`、色盤用 `chartPal()`。新增元件時若寫死顏色，記得在非 coral 規則裡改成 `--th-*`；要給簡報自訂一套外觀時，也是加一個 `THEMES` 項目和對應的 `:root[data-theme=…]` 變數。
 
 ## 3D 模型
 
