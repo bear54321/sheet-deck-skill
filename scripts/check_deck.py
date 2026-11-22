@@ -10,7 +10,7 @@ Usage:
   python3 check_deck.py path/to/folder                     # checks folder/index.html
 Exit code 1 on any problem; each message says where, the rule, and how to fix it.
 """
-import os, re, sys
+import collections, os, re, sys
 
 PLACEHOLDER = '__DECK_ID__'
 RULE = '規則：每份簡報的存檔鍵名來自 <html data-deck="…">，每份都要不一樣；不能用網址路徑（開啟簡報.command 讓每份簡報都是 /index.html，會互相覆蓋）。'
@@ -60,6 +60,22 @@ def check(path, h):
         errs.append(f'{path}:{lineno}：自己寫了一份 HTML 跳脫（把 & < > 換成 &amp; 等）。規則：HTML 跳脫一律用 escH()。修法：刪掉這份，改成呼叫 escH(文字)。')
     if re.search(r'\b(const|let|var)\s+escH\s*=', h):
         errs.append(f'{path}：escH 寫成了 const／let。規則：escH 要用 function escH(s){{…}} 宣告，頁面初始化時（makeSlide）就會用到，const 那時還不能用。修法：改回 function 宣告。')
+    # 外部程式一律用 loadJS() 載入（會避免重複載入）；只有讀試算表的 JSONP（fetchSheet）要自己建 <script>
+    for mm in re.finditer(r"createElement\(\s*['\"]script['\"]\s*\)", h):
+        line_start = h.rfind('\n', 0, mm.start()) + 1
+        line = h[line_start:h.find('\n', mm.start())]
+        if re.match(r'\s*function loadJS\(', line) or "cb='__sd'" in line:
+            continue
+        lineno = h.count('\n', 0, mm.start()) + 1
+        errs.append(f'{path}:{lineno}：自己建立 <script> 來載入程式。規則：載入外部程式一律用 loadJS(網址)（只有讀試算表的 JSONP 例外）。修法：改成 await loadJS(網址)；常用的網址寫成常數，例如 H2C_URL。')
+    # loadJS 要放在最前面的共用區（第一個 if(!PLAYER){ 之前）：放進那個區塊，3D 模型、3D 空間、純簡報都看不到它
+    if 'sheet-deck:deck:' in h or 'function saveS' in h:
+        decl, blk = re.search(r'^function loadJS\(', h, re.M), re.search(r'^if\(!PLAYER\)\{', h, re.M)
+        if not decl or (blk and decl.start() > blk.start()):
+            errs.append(f'{path}：找不到放在共用區的 function loadJS(…)。規則：loadJS 要宣告在程式最前面的共用區（第一個 if(!PLAYER){{ 之前），各功能才都呼叫得到。修法：把 function loadJS 移到 <script> 開頭的「共用工具」區。')
+    for url, n in collections.Counter(re.findall(r"https://[^'\"`\s)]+\.js\b", h)).items():
+        if n > 1:
+            errs.append(f'{path}：外部程式網址 {url} 寫了 {n} 次。規則：同一個網址只寫一次，升級版本時才不會漏改。修法：寫成一個常數（例如 H2C_URL），各處改用常數。')
     return errs, deck
 
 

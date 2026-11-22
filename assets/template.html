@@ -761,6 +761,10 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
 
 <script>
 (function(){
+/* ---------------- 共用工具（放在最前面：編輯模式、純簡報、3D 都會用到） ----------------
+   載入外部程式一律用 loadJS()（只有讀試算表的 JSONP 例外）；網址只寫一次。由 scripts/check_deck.py 把關 */
+const H2C_URL='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+function loadJS(u){return new Promise((ok,no)=>{if([...document.scripts].some(s=>s.src===u))return ok();const s=document.createElement('script');s.src=u;s.dataset.lazy=1;s.onload=ok;s.onerror=()=>no(new Error('無法載入 '+u));document.head.appendChild(s)})}
 /* ---------------- deco generator ---------------- */
 function R(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const f=n=>n.toFixed(1);
@@ -1122,12 +1126,11 @@ function expPDF(){
   setTimeout(()=>{window.print();setTimeout(()=>pr.innerHTML='',500)},300);
 }
 
-const loadJS=u=>new Promise((ok,no)=>{if([...document.scripts].some(s=>s.src===u))return ok();const s=document.createElement('script');s.src=u;s.dataset.lazy=1;s.onload=ok;s.onerror=()=>no(new Error('無法載入 '+u));document.head.appendChild(s)});
 const rgbHex=c=>{const m=c.match(/[\d.]+/g)||[0,0,0,0];return{hex:m.slice(0,3).map(x=>(+x|0).toString(16).padStart(2,'0')).join('').toUpperCase(),a:m[3]==null?1:+m[3]}};
 function inlineSvg(root){root.querySelectorAll('svg *').forEach(el=>{const cs=getComputedStyle(el);
   el.style.fill=cs.fill;el.style.stroke=cs.stroke;el.style.opacity=cs.opacity;el.style.display=cs.display;el.style.strokeDasharray=cs.strokeDasharray;el.style.strokeDashoffset=cs.strokeDashoffset;el.style.animation='none'})}
 async function buildPptx(){
-  await loadJS('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  await loadJS(H2C_URL);
   await loadJS('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js');
   await document.fonts.ready;
   const pptx=new PptxGenJS();pptx.layout='LAYOUT_WIDE';pptx.title='試算表即時簡報';
@@ -1572,7 +1575,7 @@ if(!PLAYER){
 const FLY={T:null,loader:null,SU:null,models:{},inst:new Map()};
 const MODELS={parrot:{name:'飛行鸚鵡',icon:'🦜',kind:'fly'},porcelain:{name:'瓷器 360° 展示',icon:'🏺',kind:'showcase'},globe:{name:'地球儀 360° 展示',icon:'🌐',kind:'showcase',maxZoom:4.5},girl:{name:'跳舞女孩',icon:'💃',kind:'dance',clips:{OMG_Groove:'OMG 律動舞',Pod_Baby_Groove:'Baby 律動舞',Idle_02:'待機',auto:'自動輪播'}}};
 async function flyLib(){if(FLY.T)return FLY.T;const T=await import('three');const m=await import('three/addons/loaders/GLTFLoader.js');const su=await import('three/addons/utils/SkeletonUtils.js');FLY.T=T;FLY.SU=su;FLY.loader=new m.GLTFLoader();return T}
-function loadGLB(name){return new Promise((ok,no)=>{if(window.__GLB&&window.__GLB[name])return ok();const s=document.createElement('script');s.src='3d/'+name+'.glb.js';s.dataset.lazy=1;s.onload=ok;s.onerror=()=>no(new Error('找不到 3d/'+name+'.glb.js'));document.head.appendChild(s)})}
+function loadGLB(name){if(window.__GLB&&window.__GLB[name])return Promise.resolve();return loadJS('3d/'+name+'.glb.js').catch(()=>{throw new Error('找不到 3d/'+name+'.glb.js')})}
 async function flyModel(name){if(FLY.models[name])return FLY.models[name];await flyLib();
   if(String(name).startsWith('fbx:')){const id=name.slice(4),buf=await fbxBytes(id);if(!buf)throw new Error('找不到 3D 模型「'+((S.models3d||{})[id]||{}).name+'」的檔案（可能是在別台電腦或別的網址匯入的），請重新匯入');
     const pm=await parseModel(buf),anims=[...pm.animations,...await fbxExtraClips(id)];return FLY.models[name]={scene:pm.scene,animations:anims}}
@@ -1835,8 +1838,8 @@ async function spaceOpen(){if(SPACE.on||SPACE.busy)return;SPACE.busy=true;let ov
   const snapId=it=>KEY+'|'+it.s.dataset.sid;
   async function loadSnaps(){for(const it of items){if(it.snap||!SPACE.on)continue;const rec=await snapDB('get',snapId(it));if(!rec||rec.h!==it.key)continue;
     try{const bm=await createImageBitmap(rec.blob),c=document.createElement('canvas');c.width=bm.width;c.height=bm.height;c.getContext('2d').drawImage(bm,0,0);SNAPC.set(it.key,c);useSnap(it,c)}catch(e){}}}
-  async function snapAll(progress){if(items.every(it=>it.snap))return;let done=0;const U='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    try{if(!window.html2canvas)await new Promise((ok,no)=>{const x=document.createElement('script');x.src=U;x.dataset.lazy=1;x.onload=ok;x.onerror=()=>no(new Error('無法載入 html2canvas'));document.head.appendChild(x)});await document.fonts.ready}catch(e){console.warn(e);return}
+  async function snapAll(progress){if(items.every(it=>it.snap))return;let done=0;
+    try{if(!window.html2canvas)await loadJS(H2C_URL);await document.fonts.ready}catch(e){console.warn(e);return}
     const hs=document.createElement('div');hs.style.cssText='position:fixed;left:0;top:0;width:1920px;height:1080px;z-index:-10;pointer-events:none';document.body.appendChild(hs);
     try{const order=[...items].sort((a,b)=>Math.abs(a.i-P.k)-Math.abs(b.i-P.k));
       for(const it of order){if(!SPACE.on)break;if(it.snap)continue;const c=pageClone(it.s);hs.innerHTML='';hs.appendChild(c);try{inlineSvg(c)}catch(_){}
