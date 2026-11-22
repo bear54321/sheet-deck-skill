@@ -925,7 +925,7 @@ function apply(){
   document.getElementById('sColor').value=S.accent;
   document.getElementById('sSpd').value=S.spd;document.getElementById('spdv').textContent=(+S.spd).toFixed(1)+'×';
   document.getElementById('sWc').value=S.wc;document.getElementById('wcv').textContent=Math.round(S.wc*100)+'%';
-  try{localStorage.setItem(KEY+':set',JSON.stringify(S))}catch(e){}
+  saveS();
   if(chartsInit)renderAllCharts();
   thumbsLater();
 }
@@ -1049,7 +1049,7 @@ addEventListener('keydown',e=>{
 
 /* ---------------- editing ---------------- */
 stage.addEventListener('input',e=>{const el=e.target.closest('[data-ed]');if(!el)return;EDITS[el.dataset.id]=el.innerHTML;if(el.classList.contains('num'))el.dataset.fin=el.textContent;
-  try{localStorage.setItem(KEY+':ed',JSON.stringify(EDITS))}catch(_){}thumbsLater()});
+  saveEdits();thumbsLater()});
 stage.addEventListener('paste',e=>{if(!e.target.closest('[data-ed]'))return;e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'))});
 
 /* ---------------- present ---------------- */
@@ -1366,6 +1366,7 @@ function chartOption(ch,anim){const C=CI();
   return{...base,legend,tooltip:{...tipS,trigger:'axis',formatter:ps=>escH(ps[0].axisValueLabel)+'<br>'+ps.map(p=>`${p.marker}${escH(p.seriesName)}：${vf(p.value,D.ys[p.seriesIndex].kind)}`).join('<br>')},
     grid:{left:hz?150:100,right:mixed?100:56,top,bottom},xAxis:hz?yAx[0]:cat,yAxis:hz?{...cat,inverse:true}:yAx,series};
 }
+/* 存檔一律經過 saveS()／saveEdits()：純簡報（PLAYER）不寫入存檔。由 scripts/check_deck.py 把關 */
 function saveS(){if(!PLAYER)try{localStorage.setItem(KEY+':set',JSON.stringify(S))}catch(e){}}
 function chartEl(ch){let b=stage.querySelector(`.chartbox[data-cid="${ch.id}"]`);
   if(!b){b=document.createElement('div');b.className='chartbox';b.dataset.cid=ch.id;b.innerHTML='<div class="cv"></div><i class="h nw"></i><i class="h ne"></i><i class="h sw"></i><i class="h se"></i>';slideBySid(ch.sid).appendChild(b);bindBox(b)}

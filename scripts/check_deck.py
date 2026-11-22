@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard for sheet-deck HTML: every deck saves to its own storage keys.
+"""Guard for sheet-deck HTML: every deck saves to its own storage keys, only through saveS()/saveEdits().
 
 Rule: storage keys come from <html data-deck="..."> (unique per deck), never from the URL path.
 Why: 開啟簡報.command serves each deck folder as the site root, so every deck is at /index.html;
@@ -42,6 +42,14 @@ def check(path, h):
             continue
         lineno = h.count('\n', 0, mm.start()) + 1
         errs.append(f'{path}:{lineno}：用了 location.{mm.group(1)}（網址）。{RULE} 修法：存檔或快取的鍵名改用 KEY（由 data-deck 而來）；這份簡報若是舊版範本產生的，請從最新的 assets/template.html 更新。')
+    # 存檔一律經過 saveS()／saveEdits()：它們會跳過純簡報模式（PLAYER），直接寫 localStorage 會漏掉這個保護
+    for mm in re.finditer(r'localStorage\.setItem\(\s*KEY\b', h):
+        line_start = h.rfind('\n', 0, mm.start()) + 1
+        line = h[line_start:h.find('\n', mm.start())]
+        if re.match(r'\s*function (saveS|saveEdits)\(\)', line) or 'const OLD=' in line:
+            continue
+        lineno = h.count('\n', 0, mm.start()) + 1
+        errs.append(f'{path}:{lineno}：直接用 localStorage.setItem(KEY…) 存檔。規則：存檔一律經過 saveS()（設定 S）或 saveEdits()（文字 EDITS），它們會跳過純簡報模式。修法：改成呼叫 saveS() 或 saveEdits()。')
     return errs, deck
 
 
