@@ -765,6 +765,15 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
    載入外部程式一律用 loadJS()（只有讀試算表的 JSONP 例外）；網址只寫一次。由 scripts/check_deck.py 把關 */
 const H2C_URL='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 function loadJS(u){return new Promise((ok,no)=>{if([...document.scripts].some(s=>s.src===u))return ok();const s=document.createElement('script');s.src=u;s.dataset.lazy=1;s.onload=ok;s.onerror=()=>no(new Error('無法載入 '+u));document.head.appendChild(s)})}
+/* 瀏覽器資料庫（IndexedDB）一律經過 idbOp(資料庫, 資料表, 'get'|'put'|'del', 鍵, 值)。
+   資料庫名稱、版本 1、資料表名稱都不能改，否則使用者存過的 3D 模型、截圖會讀不到。由 scripts/check_deck.py 把關 */
+const IDB={};
+async function idbOp(db,store,op,k,v){try{IDB[db]=IDB[db]||await new Promise((ok,no)=>{const q=indexedDB.open(db,1);q.onupgradeneeded=()=>q.result.createObjectStore(store);q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)});
+  return await new Promise(ok=>{const st=IDB[db].transaction(store,op==='get'?'readonly':'readwrite').objectStore(store),q=op==='put'?st.put(v,k):op==='del'?st.delete(k):st.get(k);q.onsuccess=()=>ok(q.result||null);q.onerror=()=>ok(null)})}catch(e){return null}}
+/* 新增頁的來源（存在 S.added[sid].from）：'live:srcN' 資料頁、'pdf:id' PDF 摘要頁、'doc:srcN' 文件頁，或 'blank'／既有頁的 sid。
+   這個字串格式會存進使用者的存檔，不能改；組字串用 pageFrom()、拆字串用 parseFrom()。由 scripts/check_deck.py 把關 */
+function pageFrom(kind,id){return kind+':'+id}
+function parseFrom(from){const m=/^(live|pdf|doc):([\s\S]*)$/.exec(String(from));return m?{kind:m[1],id:m[2]}:null}
 /* ---------------- deco generator ---------------- */
 function R(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const f=n=>n.toFixed(1);
@@ -895,7 +904,7 @@ function streetDeco(type,sid){const r=R(sid*131+7),o=[],big=type==='cover';
   }
   return o.join('')}
 const BLANK='<section class="slide" data-deco="content"><div class="deco"></div><div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>新的頁面</h2><p class="a l" style="--d:.25s" data-ed>點這裡輸入副標題</p></div></div></section>';
-function makeSlide(sid,from){let el;if(String(from).startsWith('live:')){const w=document.createElement('div');w.innerHTML=livePgHTML(from.slice(5),(S.added[sid]||{}).t);el=w.firstElementChild}else if(String(from).startsWith('pdf:')){const w=document.createElement('div');w.innerHTML=pdfPgHTML(from.slice(4));el=w.firstElementChild}else if(String(from).startsWith('doc:')){const w=document.createElement('div');w.innerHTML=docPgHTML(from.slice(4));el=w.firstElementChild}else if(from==='blank'||!TPL[from]){const w=document.createElement('div');w.innerHTML=BLANK;el=w.firstElementChild}else el=TPL[from].cloneNode(true);
+function makeSlide(sid,from){let el;const pf=parseFrom(from),PG={live:id=>livePgHTML(id,(S.added[sid]||{}).t),pdf:pdfPgHTML,doc:docPgHTML};if(pf){const w=document.createElement('div');w.innerHTML=PG[pf.kind](pf.id);el=w.firstElementChild}else if(from==='blank'||!TPL[from]){const w=document.createElement('div');w.innerHTML=BLANK;el=w.firstElementChild}else el=TPL[from].cloneNode(true);
   el.dataset.sid=sid;el.classList.remove('active','leaving','hold','flipped','clipL','clipR');el.querySelectorAll('.chartbox').forEach(b=>b.remove());
   el.querySelectorAll('[data-id]').forEach(e=>e.removeAttribute('data-id'));const d=el.querySelector('.deco');if(d)d.innerHTML='';return el}
 const allSlides=()=>[...stage.querySelectorAll(':scope > .slide'),...holder.querySelectorAll(':scope > .slide')];
@@ -1528,7 +1537,7 @@ async function addSource(o){o=o||{};
   if(isD){if(confirm('要在目前這頁之後新增一頁，顯示這份文件的內容嗎？'))addDocSlide(k);if(!CACHE[k])toast('⚠️ '+(srcErr[k]||DOC_SHARE),6000);else toast('已加入 Google 文件：'+srcName(k));return k}
   if(!CACHE[k]){toast('讀不到這份試算表：請確認已開放「知道連結的任何人都能檢視」',5000);return k}
   toast('已加入資料來源：'+srcName(k));return k}
-function addDocSlide(k){const sid='n'+Date.now().toString(36);S.added[sid]={from:'doc:'+k};const el=makeSlide(sid,'doc:'+k);
+function addDocSlide(k){const sid='n'+Date.now().toString(36);const f=pageFrom('doc',k);S.added[sid]={from:f};const el=makeSlide(sid,f);
   slides[cur].after(el);prepSlide(el);if(CACHE[k]&&CACHE[k].doc)renderDoc(el,CACHE[k]);afterStructure(cur+1,1)}
 function srcUse(k){const pages=slides.filter(s=>(s.dataset.src&&pageSrcKey(s)===k)||(s.dataset.doc&&docKeyOf(s)===k)).length,charts=(S.charts||[]).filter(c=>c.src===k).length;return{pages,charts}}
 function renderSrcPanel(){if(PLAYER)return;const box=document.getElementById('srcList'),pg=document.getElementById('pageSrc');if(!box)return;
@@ -1655,10 +1664,9 @@ function addFlyer(model){const sl=slides[cur];if(curFly()){toast('這一頁已�
   (S.flyers=S.flyers||[]).push(f);saveS();flyEnter();toast('已加入'+MODELS[model].icon+' '+MODELS[model].name)}
 /* ---------------- 匯入 FBX 模型 ----------------
    檔案存在 IndexedDB（sheet-deck-models），匯出 HTML 時會內嵌進檔案；有動畫的當跳舞角色、沒動畫的做 360° 展示 */
-const FBXMEM={};let FBXDB=null,FBXL=null;
+const FBXMEM={};let FBXL=null;
 async function fbxLoader(){if(!FBXL){const m=await import('three/addons/loaders/FBXLoader.js');FBXL=new m.FBXLoader()}return FBXL}
-async function fbxDB(op,k,v){try{FBXDB=FBXDB||await new Promise((ok,no)=>{const q=indexedDB.open('sheet-deck-models',1);q.onupgradeneeded=()=>q.result.createObjectStore('m');q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)});
-  return await new Promise(ok=>{const st=FBXDB.transaction('m',op==='get'?'readonly':'readwrite').objectStore('m'),q=op==='put'?st.put(v,k):op==='del'?st.delete(k):st.get(k);q.onsuccess=()=>ok(q.result||null);q.onerror=()=>ok(null)})}catch(e){return null}}
+function fbxDB(op,k,v){return idbOp('sheet-deck-models','m',op,k,v)}
 const b64of=buf=>{const u=new Uint8Array(buf);let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s)};
 async function fbxBytes(id){if(FBXMEM[id])return FBXMEM[id];const b=await fbxDB('get',id);if(b)FBXMEM[id]=b;return b}
 function fbxRegister(){Object.entries(S.models3d||{}).forEach(([id,m])=>{MODELS['fbx:'+id]={name:m.name,icon:'📦',kind:m.kind,clips:m.clips,maxZoom:4}});
@@ -1747,9 +1755,7 @@ function pageTitle(s,i){const e=[...s.querySelectorAll('[data-ed]')].map(x=>x.te
    停在某一頁：顯示可互動的真實頁面，正對螢幕、不傾斜（文字最清楚，3D 模型可拖曳） */
 const SPACE={on:false,busy:false},SNAPC=new Map();
 /* 截圖存在 IndexedDB（每頁只留最新一張），重新整理後不必重截；失敗就當沒有快取 */
-let SNAPDB=null;
-async function snapDB(op,k,v){try{SNAPDB=SNAPDB||await new Promise((ok,no)=>{const q=indexedDB.open('sheet-deck-snaps',1);q.onupgradeneeded=()=>q.result.createObjectStore('s');q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)});
-  return await new Promise(ok=>{const st=SNAPDB.transaction('s',op==='put'?'readwrite':'readonly').objectStore('s'),q=op==='put'?st.put(v,k):st.get(k);q.onsuccess=()=>ok(q.result||null);q.onerror=()=>ok(null)})}catch(e){return null}}
+function snapDB(op,k,v){return idbOp('sheet-deck-snaps','s',op,k,v)}
 const hstr=t=>{let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)+t.length};
 async function spaceOpen(){if(SPACE.on||SPACE.busy)return;SPACE.busy=true;let ov,r;
   try{
@@ -2001,7 +2007,7 @@ function livePgHTML(k,title){
   <div class="card lcard a l" style="--d:.5s"><div class="insight" data-tx></div><div class="barsbox"></div></div>
   <div class="card rcard a r" style="--d:.65s"><div class="dbox"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="#F6E4E0" stroke-width="26"/><g class="dsegs" transform="rotate(-90 100 100)"></g></svg><div class="dctr"><b class="num" data-tx>0</b><span data-tx>總計</span></div></div><div class="dleg"></div></div>
   <div class="srcline" data-tx></div></section>`}
-function addLiveSlide(k){const sid='n'+Date.now().toString(36);S.added[sid]={from:'live:'+k,t:srcName(k)};const el=makeSlide(sid,'live:'+k);
+function addLiveSlide(k){const sid='n'+Date.now().toString(36);const f=pageFrom('live',k);S.added[sid]={from:f,t:srcName(k)};const el=makeSlide(sid,f);
   slides[cur].after(el);prepSlide(el);if(CACHE[k]&&!CACHE[k].doc)try{renderSlide(el,CACHE[k])}catch(e){}afterStructure(cur+1,1)}
 function pdfPgHTML(id){
   const p=(S.pdfs||{})[id]||{title:'PDF 摘要',subtitle:'',points:[],takeaway:'',name:'PDF'},n=(p.points||[]).join('').length+(p.takeaway||'').length,fs=n<=240?38:n<=400?34:n<=560?30:27;
@@ -2088,7 +2094,7 @@ function aiErr(e){if(e instanceof AIError)return e.message;const A=ANT;
     if(e instanceof A.APIError)return'Claude 錯誤（'+(e.status||'?')+'）：'+e.message}
   else if(e&&/import|module|Failed to fetch dynamically/i.test(String(e.message)))return'無法載入 Claude 程式庫（需要網路）';
   return(e&&e.message)||String(e)}
-function addPdfSlide(id){const sid='n'+Date.now().toString(36);S.added[sid]={from:'pdf:'+id};const el=makeSlide(sid,'pdf:'+id);
+function addPdfSlide(id){const sid='n'+Date.now().toString(36);const f=pageFrom('pdf',id);S.added[sid]={from:f};const el=makeSlide(sid,f);
   slides[cur].after(el);prepSlide(el);afterStructure(cur+1,1)}
 
 /* ---------------- keynote-style shell ---------------- */
