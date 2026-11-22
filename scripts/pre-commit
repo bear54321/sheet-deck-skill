@@ -6,6 +6,17 @@
 # 安裝（每台電腦一次）：ln -sf ../../scripts/pre-commit .git/hooks/pre-commit
 set -u
 root=$(git rev-parse --show-toplevel)
+
+# Claude 載入的 skill 必須就是這個 repo（捷徑或直接 clone 在那裡），不能是另一份手動複製的副本
+skill="$HOME/.claude/skills/sheet-deck"
+if [ -e "$skill" ] && [ "$(cd "$skill" && pwd -P)" != "$(cd "$root" && pwd -P)" ]; then
+  echo "✗ $skill 是另一份副本，不是這個 repo（$root）。"
+  echo "  規則：Claude 載入的 sheet-deck skill 只能是這個 repo 本身，否則在這裡的修改不會生效、兩份會不一致。"
+  echo "  修法：確認那份沒有獨有的改動後移到垃圾桶，再執行 ln -s \"$root\" \"$skill\""
+  echo "commit 已取消。"
+  exit 1
+fi
+
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 

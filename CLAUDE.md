@@ -10,11 +10,9 @@ Claude Code skill「sheet-deck」的原始碼：製作有演示控制台的網�
 
 使用者偏好繁體中文、白話說明；技術名詞第一次出現時用一句話解釋。
 
-## 兩份副本要同步
+## Claude 載入的 skill 就是這個 repo
 
-- 開發用的 repo：`~/Desktop/anime/sheet-deck-skill`（這裡）。
-- Claude 實際載入的 skill：`~/.claude/skills/sheet-deck`，是**另一份獨立副本**（不是捷徑，有自己的 `.git`）。
-- 在這裡改完 `assets/template.html`、`SKILL.md` 等檔案後，要複製過去才會生效；同步後用 `diff -rq ~/Desktop/anime/sheet-deck-skill ~/.claude/skills/sheet-deck -x .git -x .DS_Store` 確認一致。
+`~/.claude/skills/sheet-deck` 是指向這個 repo 的捷徑（symlink），在這裡改的內容 Claude 下次載入 skill 就會用到，不需要複製；所以改壞了也會立刻影響使用。不要再放一份手動複製的副本：`scripts/pre-commit` 發現那裡是另一份副本時會擋下 commit。
 
 ## 常用指令
 
