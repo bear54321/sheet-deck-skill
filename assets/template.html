@@ -845,21 +845,36 @@ function CI(){const c=getComputedStyle(document.documentElement),g=(n,d)=>(c.get
     sa:t&&t.dark?['rgba(255,255,255,0)','rgba(255,255,255,.04)']:['#FFFFFF','#FDF3F0'],bd:t&&t.dark?'rgba(0,0,0,.35)':'#fff'}}
 const DEF={theme:'street',layout:'street',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#DC9A8B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
 let S=JSON.parse(JSON.stringify(DEF));
+/* ---------------- 舊存檔轉換 ----------------
+   存檔（S、EDITS）的格式一改，就在 MIGRATIONS 最後加一步，不要在別處寫轉換；已經有的步驟不要改順序或刪除。
+   S.v＝存檔已轉到第幾步（最新＝MIGRATIONS.length），轉過的步驟不會再跑。由 scripts/test_migrate.py 用舊存檔範例實測。 */
+/* MIGRATIONS-BEGIN */
+const MIGRATIONS=[
+  /* 1 文字編輯的鍵名：「頁序-第幾個」改成「頁 id-第幾個」 */
+  (S,E)=>{Object.keys(E).forEach(k=>{const m=k.match(/^(\d+)-(\d+)$/);if(m){E['s'+(+m[1]+1)+'-'+m[2]]=E[k];delete E[k]}})},
+  /* 2 圖表所在頁：頁序 slide 改成頁 id sid */
+  (S,E)=>{(S.charts||[]).forEach(c=>{if(c.sid==null&&c.slide!=null)c.sid='s'+(c.slide+1);delete c.slide})},
+  /* 3 Unity 嵌入功能已移除 */
+  (S,E)=>{delete S.unity},
+  /* 4 舊的預設主色 #B07A4E 換成 #DC9A8B */
+  (S,E)=>{if(/^#B07A4E$/i.test(S.accent))S.accent='#DC9A8B'},
+  /* 5 沒自己選過風格的舊設定（例如瀏覽器記住的 coral）改用目前的預設風格 */
+  (S,E)=>{if(!S.themeSet&&S.theme!==DEF.theme){if(!THEMES[S.theme]||String(S.accent).toLowerCase()===THEMES[S.theme].acc.toLowerCase())S.accent=THEMES[DEF.theme].acc;S.theme=DEF.theme;S.layout=DEF.layout}},
+  /* 6 加入版型 layout 之前的存檔：依風格補上版型 */
+  (S,E)=>{if(S.layout!=='coral'&&S.layout!=='street')S.layout=S.theme==='coral'?'coral':'street'},
+];
+function migrate(S,E){for(let i=Math.max(0,+S.v||0);i<MIGRATIONS.length;i++)MIGRATIONS[i](S,E);S.v=MIGRATIONS.length}
+/* MIGRATIONS-END */
 try{const baked=document.documentElement.dataset.settings;if(baked)Object.assign(S,JSON.parse(baked))}catch(e){}
 if(!PLAYER)try{const st=JSON.parse(localStorage.getItem(KEY+':set')||'null');if(st)Object.assign(S,st)}catch(e){}
-if(/^#B07A4E$/i.test(S.accent))S.accent='#DC9A8B';
-/* 沒自己選過風格的舊設定（例如瀏覽器記住的 coral）改用目前的預設風格 */
-if(!S.themeSet&&S.theme!==DEF.theme){if(!THEMES[S.theme]||String(S.accent).toLowerCase()===THEMES[S.theme].acc.toLowerCase())S.accent=THEMES[DEF.theme].acc;S.theme=DEF.theme;S.layout=DEF.layout}
-if(S.layout!=='coral'&&S.layout!=='street')S.layout=S.theme==='coral'?'coral':'street';
 let EDITS={};try{const be=document.documentElement.dataset.edits;if(be)EDITS=JSON.parse(be)}catch(e){}
 if(!PLAYER)try{Object.assign(EDITS,JSON.parse(localStorage.getItem(KEY+':ed')||'{}'))}catch(e){}
+migrate(S,EDITS);
 
 const stage=document.getElementById('stage'),view=document.getElementById('view');
 let slides=[...stage.querySelectorAll(':scope > .slide')];
 slides.forEach((s,i)=>{if(!s.dataset.sid)s.dataset.sid='s'+(i+1)});
-Object.keys(EDITS).forEach(k=>{const m=k.match(/^(\d+)-(\d+)$/);if(m){EDITS['s'+(+m[1]+1)+'-'+m[2]]=EDITS[k];delete EDITS[k]}});
-(S.charts||[]).forEach(c=>{if(c.sid==null&&c.slide!=null)c.sid='s'+(c.slide+1);delete c.slide});
-S.added=S.added||{};delete S.unity;  /* Unity 嵌入功能已移除 */
+S.added=S.added||{};
 const holder=document.getElementById('slideHold')||(()=>{const h=document.createElement('div');h.id='slideHold';h.style.display='none';document.body.appendChild(h);return h})();
 const TPL={};slides.forEach(s=>{TPL[s.dataset.sid]=s.cloneNode(true)});
 /* ---------------- 青綠街景版型的插圖 ----------------

@@ -38,7 +38,7 @@ Claude Code skill「sheet-deck」的原始碼：製作有演示控制台的網�
 5. 其後是資料來源（試算表 JSONP、Google 文件）、ECharts 圖表、three.js 3D、PDF 摘要（`httpJSON()` 包 `httpJSONOnce()`）、3D 空間模式、匯出。
 
 改程式時要留意：
-- **存檔格式**：`S`、`EDITS` 的結構改了，要在載入時把舊格式轉成新格式（範本裡已有幾段這種轉換）；使用者的編輯存在瀏覽器裡，壞掉會直接遺失。
+- **存檔格式**：`S`、`EDITS` 的格式改了，就在 `MIGRATIONS` 最後加一步（不改舊步驟、不在別處寫轉換），並在 `scripts/test_migrate.py` 加一個舊存檔範例；由 `test_migrate.py`（commit 前自動跑）把關。
 - **動畫**：只在 `.slide.active` 時播放；新增的動畫要加進 `.static`／`.slide.leaving`／`body[data-anim=off]` 的停用規則。裝飾要加 `.leaf` class，「隱藏小圖案」才關得掉。
 - **顏色**：用 `--th-*` 變數或既有的顏色 class（見 SKILL.md「版型與風格分開」），不要寫死，否則換風格時不會變色。
 
