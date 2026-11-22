@@ -20,6 +20,7 @@ Claude Code skill「sheet-deck」的原始碼：製作有演示控制台的網�
 
 沒有建置、套件管理或單元測試；範本是單一 HTML，直接用瀏覽器開。
 
+- commit 前由 `scripts/pre-commit` 自動對要 commit 的 HTML 跑下面兩個檢查，沒過就擋下（每台電腦裝一次：`ln -sf ../../scripts/pre-commit .git/hooks/pre-commit`）。
 - AI 請求檢查（改過 PDF 摘要／AI 相關程式後必跑）：
   - 靜態檢查（快）：`python3 scripts/check_ai_calls.py assets/template.html`
   - 實測（headless Chrome 假造兩次 503，確認會重試）：`python3 scripts/check_ai_calls.py --run assets/template.html`
