@@ -12,7 +12,7 @@ description: 製作「網頁動畫簡報＋演示控制台」：單一 HTML，�
 ## 工作流程
 
 1. **確認內容與資料**：問清楚主題、頁數、每頁要放什麼；若要接資料，請使用者提供 Google 試算表連結（要「知道連結的人可檢視」），以及要用哪個工作表分頁（網址裡的 `gid=`）。查不到的事實要問，不要編。
-2. **建資料夾**：`<簡報資料夾>/index.html`（複製 template）、`開啟簡報.command`（複製 `assets/開啟簡報.command`）、需要 3D 時建 `3d/`。
+2. **建資料夾**：`<簡報資料夾>/index.html`（複製 template，並把 `<html data-deck="__DECK_ID__">` 改成資料夾名稱，再跑 `python3 scripts/check_deck.py <簡報資料夾>`）、`開啟簡報.command`（複製 `assets/開啟簡報.command`）、需要 3D 時建 `3d/`。
 3. **改內容**：見下方「範本結構」。改完用瀏覽器實際打開檢查（console 不能有錯誤、每頁截圖看一次），修完才回報。
 4. **回報**：告訴使用者檔案位置、怎麼開、哪些沒驗證到。
 
@@ -20,7 +20,7 @@ description: 製作「網頁動畫簡報＋演示控制台」：單一 HTML，�
 
 - 範本只有**一張空白封面頁**（`data-deco="cover"`，標題、副標題預留位置），沒有範例資料或圖表；直接用瀏覽器打開就是一份空白簡報。資料頁、文件頁、PDF 摘要頁由 `livePgHTML()`／`docPgHTML()`／`pdfPgHTML()` 產生，要預先放資料頁時照下方「資料頁」的寫法加 `<section>`。
 - 舞台 1920×1080，等比縮放。每頁是 `<section class="slide" data-sid="s1">`，進場動畫用 `.a` 加 `style="--d:.3s"` 控制延遲。
-- 可編輯文字加 `data-ed`；使用者在畫面上改的字存在 `localStorage`（key 以網址路徑區分），匯出 HTML 時會烘進檔案。
+- 可編輯文字加 `data-ed`；使用者在畫面上改的字存在 `localStorage`（鍵名來自 `<html data-deck>`，每份簡報要不一樣；匯出的 HTML 會自動換一個新 id），匯出 HTML 時會烘進檔案。
 - 設定預設值在 `const DEF={...}`：
   - `src1`、`src2`、`src3`：Google 試算表網址（範本是空的，要填）。也可以在右側面板「資料來源管理」新增。
   - `charts:[...]`：預設圖表（類型、資料來源、X 欄、Y 欄、位置大小）。範本是空的。
@@ -37,8 +37,11 @@ description: 製作「網頁動畫簡報＋演示控制台」：單一 HTML，�
   - 金鑰存 `localStorage['sheet-deck:key:<claude|gemini|openai>']`，**不放進 `S`**，所以不會被匯出。三家 API 都允許瀏覽器直接呼叫，`file://` 也能用。
 - **圖表**：使用者可用「📊 插入圖表」自己加（長條、折線、面積、圓餅、圓環、散佈、雷達、漏斗、橫條），可拖曳、改欄位。時間格式（如 `5:32`）與金額會自動轉數字，「總計」列會被排除。
 - 珊瑚扁平風格是（白底、#DC9A8B、#E9A576、#CDA4A4、#4F6B6B、對話框、時鐘裝飾），裝飾由 `makeDeco` 依 `data-deco` 產生。
-- **預設風格「青綠街景」**（`street`）：青綠外框＋白色內頁，封面（`data-deco="cover"`）有樹枝、草叢、人行道、房子，內頁只有白色內頁和角落葉子；標題青綠襯線字、下方細線，頁碼是青綠圓塊。插圖由 `streetDeco()` 用 SVG 畫（沒有外部圖片），和珊瑚扁平的裝飾一起放在每頁 SVG 裡，用 `.g-street`／`.g-coral` 依風格切換顯示。
-- **風格切換**：工具列「🎨 風格」有 17 種（`THEMES`，存在 `S.theme`，預設 `street`；`coral`＝原本的珊瑚扁平；另 15 種取材自 Lemo-Opuscar 風格庫，CC BY-NC 4.0，商用要另外確認）。做法是 `<html data-theme>` 換 `--th-*` 變數：通用規則都寫成 `:root:not([data-theme=coral]) …`，所以 coral 外觀不受影響；裝飾顏色用 class（`.dk1`～`.dk5`、`.dkf`），圖表文字與格線用 `CI()`、色盤用 `chartPal()`。新增元件時若寫死顏色，記得在非 coral 規則裡改成 `--th-*`；要給簡報自訂一套外觀時，也是加一個 `THEMES` 項目和對應的 `:root[data-theme=…]` 變數。
+- **版型與風格分開**（工具列「🎨 風格」選單分兩區）：
+  - **版型**（`S.layout`，`<html data-layout>`）決定構圖：`street`＝青綠街景版型（預設：外框＋內頁，封面有樹枝、草叢、人行道、房子，內頁（含新增頁）是縮小版的同一個場景，樹枝會長出來並隨風輕擺、草叢會長高，由 `streetDeco()` 用 SVG 畫，沒有外部圖片）；`coral`＝珊瑚扁平版型（`makeDeco()` 的色塊、對話框、時鐘）。兩套圖形都放在每頁 SVG 裡，用 `.g-street`／`.g-coral` 依版型顯示。版型專屬的標題樣式寫成 `:root[data-layout=street] …`。
+  - **風格**（`S.theme`，`<html data-theme>`）只換顏色、字體、質感，套在目前的版型上：15 種取材自 Lemo-Opuscar 風格庫（CC BY-NC 4.0，商用要另外確認）。選版型會把風格重設成該版型原本的配色（`street`／`coral` 本身也是 `THEMES` 項目）。
+  - 做法是換 `--th-*` 變數：通用規則寫成 `:root:not([data-theme=coral]) …`；街景插圖顏色用 class（`.stf` 外框、`.lc0-4` 葉草、`.bk` 樹枝、`.stw/.stt` 人行道、`.bd1-7` 房子），風格沒指定時由 `--th-h`、`--th-d1…d5` 推出；珊瑚圖形用 `.dk1`～`.dk5`、`.dkf`。圖表文字與格線用 `CI()`、色盤用 `chartPal()`。新增元件時若寫死顏色，記得改成 `--th-*`。
+  - 瀏覽器記住的舊設定若沒有自己選過（`S.themeSet`），開啟時會改用目前的預設。
 
 ## 3D 模型
 

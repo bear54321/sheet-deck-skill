@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant" data-theme="street">
+<html lang="zh-Hant" data-theme="street" data-layout="street" data-deck="__DECK_ID__">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -415,21 +415,38 @@ body[data-anim=off] .chartbox{animation:none!important}
    coral＝範本原本的珊瑚扁平風；其他 15 種取材自 Lemo-Opuscar 風格庫（CC BY-NC 4.0），只換 --th-* 變數與少數規則。
    以下通用規則只在非 coral 時生效，所以原本的樣子完全不變。 */
 
-/* ---------------- 青綠街景（預設風格） ---------------- */
+/* ---------------- 版型（data-layout）：青綠街景 street／珊瑚扁平 coral ----------------
+   版型決定構圖（外框、樹枝、草、人行道、房子）；風格（data-theme）只換顏色、字體、質感。 */
 .g-street{display:none}
-:root[data-theme=street] .g-street{display:inline}
-:root[data-theme=street] .g-coral{display:none}
-:root[data-theme=street]{--th-bg:#469C9B;--th-ink:#3E4A4A;--th-ink2:#7F7F7F;--th-sub:#9A9A9A;--th-card:#FFFFFF;--th-line:#DCDCDC;--th-h:#469C9B;--th-grid:rgba(70,156,155,.16);--th-fb:'Noto Serif TC','Songti TC',Georgia,serif;--th-ft:'Noto Serif TC','Songti TC',Georgia,serif;--th-tw:600}
-:root[data-theme=street] :is(.card,.kp,.chartbox){border-width:3px!important;border-radius:12px!important}
-:root[data-theme=street] .hd h2{letter-spacing:3px}
-:root[data-theme=street] .hd>div:last-child{border-bottom:2px solid rgba(70,156,155,.55);padding:0 70px 14px}
+:root[data-layout=street] .g-street{display:inline}
+:root[data-layout=street] .g-coral{display:none}
+.stf{fill:var(--th-frame,#469C9B)}
+.lc0{fill:var(--th-l0,#8DB24E)}.lc1{fill:var(--th-l1,#5E8F3E)}.lc2{fill:var(--th-l2,#3F6E44)}.lc3{fill:var(--th-l3,#2F6B6A)}.lc4{fill:var(--th-l4,#A9C76A)}
+.bk{stroke:var(--th-bark,#7A4E33)}.stw{fill:var(--th-walk,#EADFD3)}.stt{stroke:var(--th-tile,#9C8B7E)}
+.bd1{fill:var(--th-b1,#EBC68A)}.bd2{fill:var(--th-b2,#B89BD8)}.bd3{fill:var(--th-b3,#8C6D2E)}.bd4{fill:var(--th-b4,#9CCBE0)}.bd5{fill:var(--th-b5,#E8F4FA)}.bd6{fill:var(--th-b6,#E7B98C)}.bd7{fill:var(--th-b7,#B86B3E)}
+:root[data-theme=street]{--th-bg:#FFFFFF;--th-frame:#469C9B;--th-onframe:#FFFFFF;--th-ink:#3E4A4A;--th-ink2:#7F7F7F;--th-sub:#9A9A9A;--th-card:#FFFFFF;--th-line:#DCDCDC;--th-h:#469C9B;--th-grid:rgba(70,156,155,.16);--th-fb:'Noto Serif TC','Songti TC',Georgia,serif;--th-ft:'Noto Serif TC','Songti TC',Georgia,serif;--th-tw:600}
+/* 15 種風格放在青綠街景版型上：插圖顏色由風格的變數推出來 */
+:root:not([data-theme=street]):not([data-theme=coral]){--th-frame:var(--th-h);--th-onframe:#FFFFFF;--th-l0:var(--th-d1);--th-l1:var(--th-d2);--th-l2:var(--th-d3);--th-l3:var(--th-d4);--th-l4:var(--th-d5);--th-bark:var(--th-ink);--th-walk:var(--th-card);--th-tile:var(--th-line);--th-b1:var(--th-d2);--th-b2:var(--th-d3);--th-b3:var(--th-ink);--th-b4:var(--th-d4);--th-b5:var(--th-card);--th-b6:var(--th-d1);--th-b7:var(--th-d5)}
+:root[data-theme=artdeco][data-layout]{--th-onframe:#12161F}
+:root[data-theme=blueprint][data-layout]{--th-onframe:#1D4F91}
+:root[data-theme=chalk][data-layout]{--th-onframe:#25382F}
+:root[data-theme=neon][data-layout]{--th-onframe:#0C0A14}
+:root[data-theme=crt][data-layout]{--th-onframe:#050A06}
+:root[data-theme=silent][data-layout]{--th-onframe:#1A1714}
+:root[data-theme=swiss][data-layout]{--th-frame:#E30613}
+:root[data-theme=papercut][data-layout]{--th-frame:#B3261E}
+:root[data-theme=riso][data-layout]{--th-frame:#FF4FA3}
+
+:root[data-layout=street] :is(.card,.kp,.chartbox){border-width:3px!important;border-radius:12px!important}
+:root[data-layout=street] .hd h2{letter-spacing:3px}
+:root[data-layout=street] .hd>div:last-child{border-bottom:2px solid var(--th-frame,#469C9B);padding:0 70px 14px}
+:root[data-layout=street] .hn{width:116px;height:116px;flex:none;border-radius:47% 53% 50% 50%/56% 44% 56% 44%;background:var(--th-frame,#469C9B);color:var(--th-onframe,#fff)!important;font-size:58px;display:flex;align-items:center;justify-content:center}
+:root[data-layout=street] .slide[data-deco=cover] .hd{top:230px;flex-direction:column;gap:0}
+:root[data-layout=street] .slide[data-deco=cover] .hn{display:none}
+:root[data-layout=street] .slide[data-deco=cover] .hd>div:last-child{border:0;padding:0;text-align:center}
+:root[data-layout=street] .slide[data-deco=cover] .hd h2{font-size:116px;line-height:1.2;letter-spacing:6px}
+:root[data-layout=street] .slide[data-deco=cover] .hd p{display:inline-block;margin-top:34px;background:var(--th-frame,#469C9B);color:var(--th-onframe,#fff);padding:16px 70px;font-size:28px;letter-spacing:6px}
 :root[data-theme=street] .hd p{color:#9A9A9A}
-:root[data-theme=street] .hn{width:116px;height:116px;flex:none;border-radius:47% 53% 50% 50%/56% 44% 56% 44%;background:#469C9B;color:#fff!important;font-size:58px;display:flex;align-items:center;justify-content:center}
-:root[data-theme=street] .slide[data-deco=cover] .hd{top:230px;flex-direction:column;gap:0}
-:root[data-theme=street] .slide[data-deco=cover] .hn{display:none}
-:root[data-theme=street] .slide[data-deco=cover] .hd>div:last-child{border:0;padding:0;text-align:center}
-:root[data-theme=street] .slide[data-deco=cover] .hd h2{font-size:116px;line-height:1.2;letter-spacing:6px}
-:root[data-theme=street] .slide[data-deco=cover] .hd p{display:inline-block;margin-top:34px;background:#469C9B;color:#fff;padding:16px 70px;font-size:28px;letter-spacing:6px}
 :root[data-theme=street] mark{color:inherit}
 /* 草輕輕擺動、進場時長出來 */
 .gb{transform-box:fill-box;transform-origin:50% 100%}
@@ -439,10 +456,16 @@ body[data-anim=off] .chartbox{animation:none!important}
 .lf{transform-box:fill-box;transform-origin:0 50%}
 .slide.active .g-street .lf{animation:lfIn calc(.5s*var(--spd)) calc((var(--i)*35ms + .4s)*var(--spd)) ease-out both}
 @keyframes lfIn{from{opacity:0}to{opacity:1}}
-.static .gb,.static .lf,.slide.leaving .gb,.slide.leaving .lf,body[data-anim=off] .gb,body[data-anim=off] .lf{animation:none!important}
+/* 樹枝從角落長出來，之後隨風輕擺 */
+.sw-br{transform-box:view-box}
+.slide.active .g-street .sw-br{animation:brIn calc(1.2s*var(--spd)) cubic-bezier(.2,.8,.2,1) both,brSway 7s calc(1.2s*var(--spd)) ease-in-out infinite}
+@keyframes brIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes brSway{0%,100%{transform:rotate(0)}50%{transform:rotate(1.2deg)}}
+.static .gb,.static .lf,.static .sw-br,.slide.leaving .gb,.slide.leaving .lf,.slide.leaving .sw-br,body[data-anim=off] .gb,body[data-anim=off] .lf,body[data-anim=off] .sw-br{animation:none!important}
 #ddTh .menu{left:50%;right:auto;transform:translateX(-50%);width:600px;padding:10px}
 #ddTh.open .menu{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-#themeBox .thh{grid-column:1/-1;font-size:14px;font-weight:700;color:#333;padding:4px 8px 8px}
+#themeBox .thh{grid-column:1/-1;font-size:14px;font-weight:700;color:#333;padding:8px 8px 6px}
+#themeBox .thl{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding-bottom:6px;border-bottom:1px solid var(--ui-line);margin-bottom:2px}
 #themeBox .thh small{font-weight:400;color:#999;margin-left:8px;font-size:12px}
 #themeBox button{padding:8px;gap:10px;font-size:14px;align-items:center}
 #themeBox button.on{background:#e8f5ee;box-shadow:inset 0 0 0 1.5px var(--ui)}
@@ -780,16 +803,24 @@ function makeDeco(type,sid){
 
 /* ---------------- state ---------------- */
 const PLAYER=document.documentElement.dataset.mode==='player';
-const KEY='sheet-deck:'+location.pathname;
+/* 存檔鍵名一律用 <html data-deck>（每份簡報唯一）。不能用網址路徑：開啟簡報.command 讓每份簡報的路徑都是 /index.html，會互相覆蓋。
+   由 scripts/check_deck.py 把關（簡報沒設 data-deck、或還是範本的 __DECK_ID__ 就報錯）。 */
+const DECK_ID=/^[A-Za-z0-9_-]+$/.test(document.documentElement.dataset.deck||'')?document.documentElement.dataset.deck:'__DECK_ID__';
+const KEY='sheet-deck:deck:'+DECK_ID;
+/* 一次性搬移：舊版用網址路徑當鍵名。第一份打開的簡報接手舊資料，然後刪掉舊鍵，避免再被別份簡報讀到 */
+if(!PLAYER)try{const OLD='sheet-deck:'+location.pathname;['set','ed','ui'].forEach(s=>{const v=localStorage.getItem(OLD+':'+s);if(v==null)return;if(localStorage.getItem(KEY+':'+s)==null)localStorage.setItem(KEY+':'+s,v);localStorage.removeItem(OLD+':'+s)})}catch(e){}
 /* ---------------- 簡報風格 ---------------- */
 const THEMES={street:{n:'青綠街景版型（預設）',e:'Teal Street',acc:'#469C9B',pal:['#E0A43C','#D35454','#6E9A3E','#7FA8C9','#9C8B7E'],sw:['#469C9B','#FFFFFF','#469C9B']},coral:{n:'珊瑚扁平版型',e:'Flat Coral',acc:'#DC9A8B',sw:['#FFFFFF','#DC9A8B','#FFFFFF']},woodcut:{n:'木刻版畫',e:'Woodcut Print',acc:'#A8352B',dark:0,pal:['#17130F', '#6E6250', '#B5652B'],sw:['#EDE3CE', '#17130F', '#F1E8D5']},inkwash:{n:'中國水墨',e:'Chinese Ink Wash',acc:'#B23A2E',dark:0,pal:['#3A3A3A', '#8A857C', '#B9B3A8'],sw:['#F4EFE4', '#D9D4CA', '#1E1E1E']},ukiyoe:{n:'浮世繪',e:'Ukiyo-e',acc:'#C8442E',dark:0,pal:['#233B5C', '#6E9AC0', '#D8B26E'],sw:['#EFE4CC', '#233B5C', '#F3E9D2']},papercut:{n:'紅色窗花剪紙',e:'Red Paper-cut',acc:'#D9A21B',dark:0,pal:['#B3261E', '#7A1A14', '#E8786E'],sw:['#F5EDDC', '#B3261E', '#F7EEDC']},riso:{n:'孔版印刷',e:'Risograph Print',acc:'#0078BF',dark:0,pal:['#FF4FA3', '#FFD100', '#00A95C'],sw:['#F4F0E6', '#FF4FA3', '#F4F0E6']},pop:{n:'普普藝術',e:'Pop Art',acc:'#E2231A',dark:0,pal:['#1E5BD6', '#111111', '#FF8A00'],sw:['#FFE14D', '#111111', '#FFFFFF']},swiss:{n:'瑞士動態排版',e:'Swiss Motion Graphics',acc:'#E30613',dark:0,pal:['#111111', '#8C8C8C', '#C9C9C9'],sw:['#F2F2EE', '#E30613', '#FFFFFF']},bauhaus:{n:'包浩斯幾何',e:'Bauhaus Shapes',acc:'#D62E2E',dark:0,pal:['#1F4E9C', '#F2C230', '#1A1A1A'],sw:['#EFE8D8', '#1F4E9C', '#F2C230']},artdeco:{n:'裝飾藝術',e:'Art Deco',acc:'#D4AF37',dark:1,pal:['#1E9C8C', '#E8D9A8', '#8E7A3A'],sw:['#12161F', '#0A0D13', '#D4AF37']},blueprint:{n:'工程藍圖',e:'Blueprint',acc:'#FFD23F',dark:1,pal:['#EAF2FF', '#8FC1FF', '#FF8A65'],sw:['#1D4F91', '#173F75', '#EAF2FF']},chalk:{n:'黑板粉筆',e:'Chalkboard',acc:'#F5D46B',dark:1,pal:['#F1F1E6', '#8FD3F5', '#F59AB0'],sw:['#25382F', '#1B2A23', '#F1F1E6']},neon:{n:'霓虹燈管',e:'Neon Tubes',acc:'#FF3FA4',dark:1,pal:['#5CF2FF', '#B6FF3F', '#FFD23F'],sw:['#0C0A14', '#130F20', '#5CF2FF']},crt:{n:'CRT 字元終端',e:'CRT ASCII Terminal',acc:'#FFB000',dark:1,pal:['#3DFF7A', '#2BC4FF', '#9DFFB8'],sw:['#050A06', '#08140B', '#3DFF7A']},silent:{n:'1920s 默片',e:'1920s Silent Film',acc:'#C9B27C',dark:1,pal:['#E8E1D0', '#8E8673', '#5E574A'],sw:['#1A1714', '#0E0C0A', '#E8E1D0']},watercolor:{n:'水彩筆刷',e:'Watercolor Brush',acc:'#E8743B',dark:0,pal:['#6EA0CD', '#6EBE96', '#C68FCB'],sw:['#FBF8F2', '#BCD3E6', '#2F5E8C']}};
 
-function setTheme(k){if(!THEMES[k])return;S.theme=k;S.themeSet=1;S.accent=THEMES[k].acc;saveS();apply();themeMenu();
+const LAYOUTS=['street','coral'];
+function setTheme(k){if(!THEMES[k])return;S.theme=k;S.themeSet=1;if(LAYOUTS.includes(k))S.layout=k;S.accent=THEMES[k].acc;saveS();apply();themeMenu();
   if(typeof renderAllCharts==='function')renderAllCharts();if(typeof thumbsLater==='function')thumbsLater();
-  toast('已換成「'+THEMES[k].n+'」風格；主色調可以在右側「格式」再調整',3500)}
-function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const cur=THEMES[S.theme]?S.theme:'street';
-  box.innerHTML='<div class="thh">簡報風格<small>青綠街景是預設；木刻等 15 種取材自 Lemo-Opuscar 風格庫</small></div>'+Object.entries(THEMES).map(([k,t])=>
-    `<button data-th="${k}" class="${k===cur?'on':''}"><i class="thsw" style="background:${t.sw[0]}"><b style="background:${t.sw[1]}"><u style="background:${t.sw[2]}"></u><u style="background:${t.sw[2]}"></u></b><em style="background:${t.acc}"></em></i><span>${t.n}<small>${t.e}</small></span></button>`).join('');
+  toast(LAYOUTS.includes(k)?'已換成「'+THEMES[k].n+'」':'已套用「'+THEMES[k].n+'」風格（版型不變）；主色調可以在右側「格式」再調整',3500)}
+function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const lay=S.layout==='coral'?'coral':'street',cur=THEMES[S.theme]?S.theme:lay;
+  const btn=([k,t],on)=>`<button data-th="${k}" class="${on?'on':''}"><i class="thsw" style="background:${t.sw[0]}"><b style="background:${t.sw[1]}"><u style="background:${t.sw[2]}"></u><u style="background:${t.sw[2]}"></u></b><em style="background:${t.acc}"></em></i><span>${t.n}<small>${t.e}</small></span></button>`;
+  const E=Object.entries(THEMES);
+  box.innerHTML='<div class="thh">版型<small>決定頁面構圖；換版型會回到它原本的配色</small></div><div class="thl">'+E.filter(([k])=>LAYOUTS.includes(k)).map(e=>btn(e,e[0]===lay)).join('')+'</div>'
+    +'<div class="thh">風格<small>套在目前的版型上，只換顏色、字體、質感；取材自 Lemo-Opuscar 風格庫</small></div>'+E.filter(([k])=>!LAYOUTS.includes(k)).map(e=>btn(e,e[0]===cur)).join('');
   if(!box.dataset.wired){box.dataset.wired=1;const dd=document.getElementById('ddTh');
     document.getElementById('bTheme').onclick=e=>{e.stopPropagation();document.querySelectorAll('.dd.open').forEach(x=>{if(x!==dd)x.classList.remove('open')});dd.classList.toggle('open')};
     box.addEventListener('click',e=>{e.stopPropagation();const b=e.target.closest('[data-th]');if(b){setTheme(b.dataset.th);dd.classList.remove('open')}});
@@ -799,13 +830,14 @@ function CI(){const c=getComputedStyle(document.documentElement),g=(n,d)=>(c.get
   const m=v=>g('--th-sub',v),gr=v=>g('--th-grid',v);
   return{h:g('--th-ink','#3b3b3b'),b:g('--th-ink2','#555'),c6:m('#666'),c7:m('#777'),c8:m('#888'),ca:m('#aaa'),g1:gr('#F6E4E0'),g2:gr('#EBCFC8'),g3:gr('#F1D8D2'),
     sa:t&&t.dark?['rgba(255,255,255,0)','rgba(255,255,255,.04)']:['#FFFFFF','#FDF3F0'],bd:t&&t.dark?'rgba(0,0,0,.35)':'#fff'}}
-const DEF={theme:'street',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#DC9A8B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
+const DEF={theme:'street',layout:'street',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#DC9A8B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
 let S=JSON.parse(JSON.stringify(DEF));
 try{const baked=document.documentElement.dataset.settings;if(baked)Object.assign(S,JSON.parse(baked))}catch(e){}
 if(!PLAYER)try{const st=JSON.parse(localStorage.getItem(KEY+':set')||'null');if(st)Object.assign(S,st)}catch(e){}
 if(/^#B07A4E$/i.test(S.accent))S.accent='#DC9A8B';
 /* 沒自己選過風格的舊設定（例如瀏覽器記住的 coral）改用目前的預設風格 */
-if(!S.themeSet&&S.theme!==DEF.theme){if(!THEMES[S.theme]||String(S.accent).toLowerCase()===THEMES[S.theme].acc.toLowerCase())S.accent=THEMES[DEF.theme].acc;S.theme=DEF.theme}
+if(!S.themeSet&&S.theme!==DEF.theme){if(!THEMES[S.theme]||String(S.accent).toLowerCase()===THEMES[S.theme].acc.toLowerCase())S.accent=THEMES[DEF.theme].acc;S.theme=DEF.theme;S.layout=DEF.layout}
+if(S.layout!=='coral'&&S.layout!=='street')S.layout=S.theme==='coral'?'coral':'street';
 let EDITS={};try{const be=document.documentElement.dataset.edits;if(be)EDITS=JSON.parse(be)}catch(e){}
 if(!PLAYER)try{Object.assign(EDITS,JSON.parse(localStorage.getItem(KEY+':ed')||'{}'))}catch(e){}
 
@@ -817,39 +849,45 @@ Object.keys(EDITS).forEach(k=>{const m=k.match(/^(\d+)-(\d+)$/);if(m){EDITS['s'+
 S.added=S.added||{};delete S.unity;  /* Unity 嵌入功能已移除 */
 const holder=document.getElementById('slideHold')||(()=>{const h=document.createElement('div');h.id='slideHold';h.style.display='none';document.body.appendChild(h);return h})();
 const TPL={};slides.forEach(s=>{TPL[s.dataset.sid]=s.cloneNode(true)});
-/* ---------------- 青綠街景（預設風格）的插圖 ----------------
-   青綠外框＋白色內頁；封面有樹枝、草叢、人行道、房子，內頁只在外框露出一點樹枝。全部用 SVG 畫，沒有外部圖片。 */
-const STR={teal:'#469C9B',walk:'#EADFD3',tile:'#9C8B7E',bark:'#7A4E33',leaf:['#8DB24E','#5E8F3E','#3F6E44','#2F6B6A','#A9C76A']};
+/* ---------------- 青綠街景版型的插圖 ----------------
+   外框（.stf）＋露出底色的內頁；封面有樹枝、草叢、人行道、房子；內頁是縮小版的同一個場景（較細的外框、角落樹枝、矮草叢、右下小房子），內容疊在插圖上面。全部用 SVG 畫，沒有外部圖片。
+   顏色都用 class（.stf .lc0-4 .bk .stw .stt .bd1-7），換風格時由 --th-* 變數重新上色。 */
 function streetDeco(type,sid){const r=R(sid*131+7),o=[],big=type==='cover';
-  const leafAt=(x,y,a,sz,i)=>{const c=STR.leaf[Math.floor(r()*STR.leaf.length)];
-    return `<path class="lf" style="--i:${i}" d="M0,0 Q${f(sz*.5)},${f(-sz*.32)} ${f(sz)},0 Q${f(sz*.5)},${f(sz*.32)} 0,0Z" fill="${c}" transform="translate(${f(x)},${f(y)}) rotate(${f(a)})"/>`};
+  const lc=()=>'lc'+Math.floor(r()*5);
+  const leafAt=(x,y,a,sz,i)=>`<path class="lf ${lc()}" style="--i:${i}" d="M0,0 Q${f(sz*.5)},${f(-sz*.32)} ${f(sz)},0 Q${f(sz*.5)},${f(sz*.32)} 0,0Z" transform="translate(${f(x)},${f(y)}) rotate(${f(a)})"/>`;
   /* 樹枝：一條主幹＋幾條細枝，枝上長葉子 */
   const branch=(x0,y0,x1,y1,w,mir,n)=>{let s='';const M=x=>mir?1920-x:x,cx=(x0+x1)/2+(mir?-1:1)*40,cy=(y0+y1)/2+60;
-    s+=`<path d="M${M(x0)},${y0}Q${M(cx)},${cy} ${M(x1)},${y1}" fill="none" stroke="${STR.bark}" stroke-width="${w}" stroke-linecap="round"/>`;
+    s+=`<path class="bk" d="M${M(x0)},${y0}Q${M(cx)},${cy} ${M(x1)},${y1}" fill="none" stroke-width="${w}" stroke-linecap="round"/>`;
     for(let k=0;k<n;k++){const t=.25+k*.7/n,u=1-t,px=u*u*x0+2*u*t*cx+t*t*x1,py=u*u*y0+2*u*t*cy+t*t*y1,len=60+r()*90,ang=(r()<.5?-1:1)*(25+r()*30)+(Math.atan2(y1-y0,x1-x0)*180/Math.PI),
         ex=px+Math.cos(ang*Math.PI/180)*len,ey=py+Math.sin(ang*Math.PI/180)*len;
-      s+=`<path d="M${f(M(px))},${f(py)}L${f(M(ex))},${f(ey)}" stroke="${STR.bark}" stroke-width="${f(w*.45)}" stroke-linecap="round"/>`;
+      s+=`<path class="bk" d="M${f(M(px))},${f(py)}L${f(M(ex))},${f(ey)}" stroke-width="${f(w*.45)}" stroke-linecap="round"/>`;
       for(let q=0;q<7;q++){const tt=.2+q*.12,lx=px+(ex-px)*tt,ly=py+(ey-py)*tt;s+=leafAt(M(lx),ly,(mir?180-ang:ang)+(q%2?55:-55)+(r()-.5)*30,30+r()*18,k*7+q)}}
-    return `<g class="leaf sw-br">${s}</g>`};
+    return `<g class="leaf sw-br" style="transform-origin:${mir?'1920px 0':'0 0'}${mir?';animation-direction:normal,reverse':''}">${s}</g>`};
+  const ring=(m,b)=>`<path class="stf" fill-rule="evenodd" d="M0,0H1920V1080H0Z M${m},${m}V${1080-b}H${1920-m}V${m}Z"/>`;
+  /* 房子（簡單的幾何）；s＝縮放，以人行道上緣（y=985）為基準 */
+  const houses=(s,dx)=>`<g class="leaf" transform="translate(${dx},${f(985*(1-s))}) scale(${s})"><rect class="bd1" x="1560" y="560" width="240" height="425"/><rect class="bd2" x="1550" y="540" width="260" height="30"/>`+
+      [...Array(12)].map((_,i)=>`<rect class="bd3" x="${1590+(i%3)*68}" y="${600+Math.floor(i/3)*90}" width="34" height="50" opacity=".75"/>`).join('')+
+      `<rect class="bd4" x="1420" y="700" width="140" height="285"/><rect class="bd5" x="1440" y="730" width="100" height="120"/><rect class="bd6" x="1300" y="800" width="120" height="185"/><rect class="bd7" x="1290" y="780" width="140" height="26"/></g>`;
+  /* 人行道：top＝上緣 */
+  const walk=top=>{let s=`<rect class="stw" x="0" y="${top}" width="1920" height="${1080-top}"/><path class="stt" d="M0,${top+27}H1920" stroke-width="3"/>`;
+    for(let x=-60;x<1980;x+=300)s+=`<path class="stt" d="M${x+40},${top+27}L${x-10},1080" stroke-width="3"/>`;return s};
+  /* 草叢：底部一排葉片，中間比較矮，不擋到文字；base＝草根的 y，k＝高度倍數 */
+  const grass=(base,k)=>{let g='';for(let i=0;i<70;i++){const x=-20+i*28+r()*16,mid=Math.abs(x-960)<520,h=((mid?50:110)+r()*(mid?60:130))*k,lean=(r()-.5)*60;
+      g+=`<path class="gb ${lc()}" style="--i:${i%14}" d="M${f(x-12)},${base}Q${f(x+lean*.3)},${f(base-h*.6)} ${f(x+lean)},${f(base-h)}Q${f(x+lean*.2+8)},${f(base-h*.5)} ${f(x+14)},${base}Z"/>`}
+    return `<g class="leaf">${g}</g>`};
   if(big){
-    o.push(`<rect x="70" y="70" width="1780" height="930" fill="#fff"/>`);
-    /* 人行道 */
-    let walk=`<rect x="0" y="985" width="1920" height="95" fill="${STR.walk}"/><path d="M0,1012H1920" stroke="${STR.tile}" stroke-width="3"/>`;
-    for(let x=-60;x<1980;x+=300)walk+=`<path d="M${x+40},1012L${x-10},1080" stroke="${STR.tile}" stroke-width="3"/>`;
-    o.push(walk);
-    /* 右下的房子（簡單的幾何） */
-    o.push(`<g class="leaf"><rect x="1560" y="560" width="240" height="425" fill="#EBC68A"/><rect x="1550" y="540" width="260" height="30" fill="#B89BD8"/>`+
-      [...Array(12)].map((_,i)=>`<rect x="${1590+(i%3)*68}" y="${600+Math.floor(i/3)*90}" width="34" height="50" fill="#8C6D2E" opacity=".75"/>`).join('')+
-      `<rect x="1420" y="700" width="140" height="285" fill="#9CCBE0"/><rect x="1440" y="730" width="100" height="120" fill="#E8F4FA"/><rect x="1300" y="800" width="120" height="185" fill="#E7B98C"/><rect x="1290" y="780" width="140" height="26" fill="#B86B3E"/></g>`);
-    /* 草叢：底部一排葉片，中間比較矮，不擋到文字 */
-    let g='';for(let i=0;i<70;i++){const x=-20+i*28+r()*16,mid=Math.abs(x-960)<520,h=(mid?50:110)+r()*(mid?60:130),lean=(r()-.5)*60,c=STR.leaf[Math.floor(r()*STR.leaf.length)];
-      g+=`<path class="gb" style="--i:${i%14}" d="M${f(x-12)},990Q${f(x+lean*.3)},${f(990-h*.6)} ${f(x+lean)},${f(990-h)}Q${f(x+lean*.2+8)},${f(990-h*.5)} ${f(x+14)},990Z" fill="${c}"/>`}
-    o.push(`<g class="leaf">${g}</g>`);
+    o.push(ring(70,80));
+    o.push(walk(985));
+    o.push(houses(1,0));
+    o.push(grass(990,1));
     o.push(branch(-30,360,360,-20,20,false,7)+branch(-30,360,360,-20,20,true,7));
   }else{
-    o.push(`<rect x="26" y="26" width="1868" height="1028" fill="#fff"/>`);
-    /* 內頁：只在外框角落露出一點樹枝與葉子 */
-    o.push(`<g class="leaf">`+leafAt(30,40,-30,26,0)+leafAt(1890,40,210,26,1)+leafAt(18,1040,20,22,2)+leafAt(1900,1040,160,22,3)+`</g>`);
+    /* 內頁：同一個街景縮小，內容區留白 */
+    o.push(ring(44,44));
+    o.push(walk(1036));
+    o.push(houses(.42,1110));
+    o.push(grass(1040,.45));
+    o.push(branch(-20,240,240,-20,13,false,4)+branch(-20,240,240,-20,13,true,4));
   }
   return o.join('')}
 const BLANK='<section class="slide" data-deco="content"><div class="deco"></div><div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>新的頁面</h2><p class="a l" style="--d:.25s" data-ed>點這裡輸入副標題</p></div></div></section>';
@@ -876,7 +914,7 @@ setEditable(!PLAYER);
 
 const hexRgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
 function apply(){
-  const b=document.body,rs=document.documentElement.style;document.documentElement.dataset.theme=THEMES[S.theme]?S.theme:'street';
+  const b=document.body,rs=document.documentElement.style;document.documentElement.dataset.theme=THEMES[S.theme]?S.theme:'street';document.documentElement.dataset.layout=S.layout==='coral'?'coral':'street';
   b.dataset.hl=S.hl;b.dataset.anim=S.anim;b.dataset.leaf=S.leaf;stage.dataset.trans=S.trans;
   rs.setProperty('--accent',S.accent);rs.setProperty('--accent-soft',hexRgba(S.accent,.16));rs.setProperty('--accent-soft2',hexRgba(S.accent,.42));
   rs.setProperty('--spd',S.spd);rs.setProperty('--wc',S.wc);
@@ -1054,6 +1092,7 @@ function cleanRoot(){
   root.querySelector('body').classList.remove('present');
   root.querySelectorAll('.num').forEach(e=>{if(e.dataset.fin)e.textContent=e.dataset.fin;e.removeAttribute('data-fin')});
   root.removeAttribute('style');root.querySelector('#stage').removeAttribute('style');
+  root.dataset.deck=DECK_ID.replace(/-x[0-9a-z]+$/,'')+'-x'+Date.now().toString(36);
   root.dataset.settings=JSON.stringify(S);
   root.dataset.cache=JSON.stringify(CACHE);
   root.dataset.edits=JSON.stringify(EDITS);
@@ -1790,8 +1829,8 @@ async function spaceOpen(){if(SPACE.on||SPACE.busy)return;SPACE.busy=true;let ov
   function useSnap(it,c){it.snap=c;const old=it.mat.map;it.mat.map=tex(c);it.mat.needsUpdate=true;if(old)old.dispose();P.dirty=true}
   /* 快取鑰匙只看內容；頁尾的「更新於 時間」每次載入都會變，要排除，否則每次都重截 */
   const keyText=c=>{const x=c.cloneNode(true);x.querySelectorAll('.srcline').forEach(e=>e.remove());return x.textContent.replace(/\s+/g,' ')};
-  items.forEach(it=>{it.key=it.s.dataset.sid+':'+(S.theme||'')+':'+hstr(keyText(it.c));const c=SNAPC.get(it.key);if(c)useSnap(it,c)});
-  const snapId=it=>location.pathname+'|'+it.s.dataset.sid;
+  items.forEach(it=>{it.key=it.s.dataset.sid+':'+(S.layout||'')+(S.theme||'')+':'+hstr(keyText(it.c));const c=SNAPC.get(it.key);if(c)useSnap(it,c)});
+  const snapId=it=>KEY+'|'+it.s.dataset.sid;
   async function loadSnaps(){for(const it of items){if(it.snap||!SPACE.on)continue;const rec=await snapDB('get',snapId(it));if(!rec||rec.h!==it.key)continue;
     try{const bm=await createImageBitmap(rec.blob),c=document.createElement('canvas');c.width=bm.width;c.height=bm.height;c.getContext('2d').drawImage(bm,0,0);SNAPC.set(it.key,c);useSnap(it,c)}catch(e){}}}
   async function snapAll(progress){if(items.every(it=>it.snap))return;let done=0;const U='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';

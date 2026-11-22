@@ -17,6 +17,7 @@ git clone https://github.com/bear54321/sheet-deck-skill.git ~/.claude/skills/she
 | `SKILL.md` | 給 Claude 的使用說明 |
 | `assets/template.html` | 簡報範本（編輯器、資料、圖表、3D、PDF 摘要、匯出、3D 空間） |
 | `assets/開啟簡報.command` | Mac 雙擊啟動本機伺服器並開啟簡報 |
+| `scripts/check_deck.py` | 檢查每份簡報有自己的 `data-deck`（存檔鍵名），避免簡報間互相覆蓋 |
 | `scripts/glb2js.py` | 把 GLB 包成 `.glb.js`，雙擊開 HTML 也能載入 |
 | `scripts/optimize_model.py` | Blender 背景壓縮模型（減面、縮貼圖） |
 | `scripts/object_capture.swift` | Mac Object Capture：照片轉 3D 模型 |
