@@ -447,7 +447,6 @@ body[data-anim=off] .chartbox{animation:none!important}
 :root[data-layout=street] .slide[data-deco=cover] .hd h2{font-size:116px;line-height:1.2;letter-spacing:6px}
 :root[data-layout=street] .slide[data-deco=cover] .hd p{display:inline-block;margin-top:34px;background:var(--th-frame,#469C9B);color:var(--th-onframe,#fff);padding:16px 70px;font-size:28px;letter-spacing:6px}
 :root[data-theme=street] .hd p{color:#9A9A9A}
-:root[data-theme=street] mark{color:inherit}
 /* 草輕輕擺動、進場時長出來 */
 .gb{transform-box:fill-box;transform-origin:50% 100%}
 .slide.active .gb{animation:gbUp calc(.8s*var(--spd)) calc((var(--i)*40ms + .2s)*var(--spd)) cubic-bezier(.2,.8,.2,1) both,gbSway 5s calc(var(--i)*-.37s) ease-in-out infinite}
@@ -677,7 +676,7 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
     <div class="tpre"><button data-sz="20">小</button><button data-sz="28">內文</button><button data-sz="40">副標</button><button data-sz="66">標題</button><button data-sz="110">特大</button></div>
     <div class="tip" id="tScope" style="margin-top:10px"></div>
     <label class="h" style="margin-top:16px">樣式</label>
-    <div class="tsty"><button id="tB" title="粗體（⌘/Ctrl+B）"><b>B</b></button><button id="tI" title="斜體（⌘/Ctrl+I）"><i>I</i></button><button id="tU" title="底線（⌘/Ctrl+U）"><u>U</u></button></div>
+    <div class="tsty"><button id="tB" title="粗體（⌘/Ctrl+B）"><b>B</b></button><button id="tI" title="斜體（⌘/Ctrl+I）"><i>I</i></button><button id="tU" title="底線（⌘/Ctrl+U）"><u>U</u></button><button id="tM" title="標記重點（選取文字後按；再按一次取消）。外觀由「高亮樣式」決定"><mark style="padding:0 .2em">重點</mark></button></div>
     <label class="h" style="margin-top:16px">文字顏色</label>
     <div class="tcol"><button data-c="#4A5656" style="background:#4A5656" title="深灰綠"></button><button data-c="#DC9A8B" style="background:#DC9A8B" title="珊瑚粉"></button><button data-c="#E39A6E" style="background:#E39A6E" title="蜜桃橘"></button><button data-c="#C49595" style="background:#C49595" title="藕粉"></button><button data-c="#4F6B6B" style="background:#4F6B6B" title="墨綠"></button><button data-c="#C0503F" style="background:#C0503F" title="強調紅"></button><button data-c="#999999" style="background:#999999" title="灰"></button><button data-c="#FFFFFF" style="background:#FFFFFF" title="白"></button></div>
     <div class="tcc"><span>自訂</span><input type="color" id="tColor"></div>
@@ -826,7 +825,7 @@ if(!PLAYER)try{const OLD='sheet-deck:'+location.pathname;['set','ed','ui'].forEa
 const THEMES={street:{n:'青綠街景版型（預設）',e:'Teal Street',acc:'#469C9B',pal:['#E0A43C','#D35454','#6E9A3E','#7FA8C9','#9C8B7E'],sw:['#469C9B','#FFFFFF','#469C9B']},coral:{n:'珊瑚扁平版型',e:'Flat Coral',acc:'#DC9A8B',sw:['#FFFFFF','#DC9A8B','#FFFFFF']},woodcut:{n:'木刻版畫',e:'Woodcut Print',acc:'#A8352B',dark:0,pal:['#17130F', '#6E6250', '#B5652B'],sw:['#EDE3CE', '#17130F', '#F1E8D5']},inkwash:{n:'中國水墨',e:'Chinese Ink Wash',acc:'#B23A2E',dark:0,pal:['#3A3A3A', '#8A857C', '#B9B3A8'],sw:['#F4EFE4', '#D9D4CA', '#1E1E1E']},ukiyoe:{n:'浮世繪',e:'Ukiyo-e',acc:'#C8442E',dark:0,pal:['#233B5C', '#6E9AC0', '#D8B26E'],sw:['#EFE4CC', '#233B5C', '#F3E9D2']},papercut:{n:'紅色窗花剪紙',e:'Red Paper-cut',acc:'#D9A21B',dark:0,pal:['#B3261E', '#7A1A14', '#E8786E'],sw:['#F5EDDC', '#B3261E', '#F7EEDC']},riso:{n:'孔版印刷',e:'Risograph Print',acc:'#0078BF',dark:0,pal:['#FF4FA3', '#FFD100', '#00A95C'],sw:['#F4F0E6', '#FF4FA3', '#F4F0E6']},pop:{n:'普普藝術',e:'Pop Art',acc:'#E2231A',dark:0,pal:['#1E5BD6', '#111111', '#FF8A00'],sw:['#FFE14D', '#111111', '#FFFFFF']},swiss:{n:'瑞士動態排版',e:'Swiss Motion Graphics',acc:'#E30613',dark:0,pal:['#111111', '#8C8C8C', '#C9C9C9'],sw:['#F2F2EE', '#E30613', '#FFFFFF']},bauhaus:{n:'包浩斯幾何',e:'Bauhaus Shapes',acc:'#D62E2E',dark:0,pal:['#1F4E9C', '#F2C230', '#1A1A1A'],sw:['#EFE8D8', '#1F4E9C', '#F2C230']},artdeco:{n:'裝飾藝術',e:'Art Deco',acc:'#D4AF37',dark:1,pal:['#1E9C8C', '#E8D9A8', '#8E7A3A'],sw:['#12161F', '#0A0D13', '#D4AF37']},blueprint:{n:'工程藍圖',e:'Blueprint',acc:'#FFD23F',dark:1,pal:['#EAF2FF', '#8FC1FF', '#FF8A65'],sw:['#1D4F91', '#173F75', '#EAF2FF']},chalk:{n:'黑板粉筆',e:'Chalkboard',acc:'#F5D46B',dark:1,pal:['#F1F1E6', '#8FD3F5', '#F59AB0'],sw:['#25382F', '#1B2A23', '#F1F1E6']},neon:{n:'霓虹燈管',e:'Neon Tubes',acc:'#FF3FA4',dark:1,pal:['#5CF2FF', '#B6FF3F', '#FFD23F'],sw:['#0C0A14', '#130F20', '#5CF2FF']},crt:{n:'CRT 字元終端',e:'CRT ASCII Terminal',acc:'#FFB000',dark:1,pal:['#3DFF7A', '#2BC4FF', '#9DFFB8'],sw:['#050A06', '#08140B', '#3DFF7A']},silent:{n:'1920s 默片',e:'1920s Silent Film',acc:'#C9B27C',dark:1,pal:['#E8E1D0', '#8E8673', '#5E574A'],sw:['#1A1714', '#0E0C0A', '#E8E1D0']},watercolor:{n:'水彩筆刷',e:'Watercolor Brush',acc:'#E8743B',dark:0,pal:['#6EA0CD', '#6EBE96', '#C68FCB'],sw:['#FBF8F2', '#BCD3E6', '#2F5E8C']}};
 
 const LAYOUTS=['street','coral'];
-function setTheme(k){if(!THEMES[k])return;S.theme=k;S.themeSet=1;if(LAYOUTS.includes(k))S.layout=k;S.accent=THEMES[k].acc;saveS();apply();themeMenu();
+function setTheme(k){if(!THEMES[k])return;S.theme=k;S.themeSet=1;S.accentSet=0;if(LAYOUTS.includes(k))S.layout=k;S.accent=THEMES[k].acc;saveS();apply();themeMenu();
   if(typeof renderAllCharts==='function')renderAllCharts();if(typeof thumbsLater==='function')thumbsLater();
   toast(LAYOUTS.includes(k)?'已換成「'+THEMES[k].n+'」':'已套用「'+THEMES[k].n+'」風格（版型不變）；主色調可以在右側「格式」再調整',3500)}
 function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const lay=S.layout==='coral'?'coral':'street',cur=THEMES[S.theme]?S.theme:lay;
@@ -843,7 +842,7 @@ function CI(){const c=getComputedStyle(document.documentElement),g=(n,d)=>(c.get
   const m=v=>g('--th-sub',v),gr=v=>g('--th-grid',v);
   return{h:g('--th-ink','#3b3b3b'),b:g('--th-ink2','#555'),c6:m('#666'),c7:m('#777'),c8:m('#888'),ca:m('#aaa'),g1:gr('#F6E4E0'),g2:gr('#EBCFC8'),g3:gr('#F1D8D2'),
     sa:t&&t.dark?['rgba(255,255,255,0)','rgba(255,255,255,.04)']:['#FFFFFF','#FDF3F0'],bd:t&&t.dark?'rgba(0,0,0,.35)':'#fff'}}
-const DEF={theme:'street',layout:'street',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#DC9A8B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
+const DEF={theme:'street',layout:'street',flyers:[],trans:'fade',anim:'on',spd:1,hl:'glass',accent:'#469C9B',leaf:'on',wc:.9,auto:'on',src1:'',src2:'',src3:'',charts:[]};
 let S=JSON.parse(JSON.stringify(DEF));
 /* ---------------- 舊存檔轉換 ----------------
    存檔（S、EDITS）的格式一改，就在 MIGRATIONS 最後加一步，不要在別處寫轉換；已經有的步驟不要改順序或刪除。
@@ -946,10 +945,12 @@ function apply(){
   b.dataset.hl=S.hl;b.dataset.anim=S.anim;b.dataset.leaf=S.leaf;stage.dataset.trans=S.trans;
   rs.setProperty('--accent',S.accent);rs.setProperty('--accent-soft',hexRgba(S.accent,.16));rs.setProperty('--accent-soft2',hexRgba(S.accent,.42));
   rs.setProperty('--spd',S.spd);rs.setProperty('--wc',S.wc);
+  /* 自己選過主色調（S.accentSet）：標題、頁碼圓圈、外框都換成主色調；換風格時回到風格原本的配色 */
+  ['--th-h','--th-frame'].forEach(v=>S.accentSet?rs.setProperty(v,S.accent):rs.removeProperty(v));
   if(PLAYER)return;
   document.getElementById('sTrans').value=S.trans;
   document.querySelectorAll('.seg[data-k]').forEach(g=>g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.v===S[g.dataset.k])));
-  document.querySelectorAll('#sw button').forEach(x=>x.classList.toggle('on',x.dataset.c.toLowerCase()===S.accent.toLowerCase()));
+  swatches();document.querySelectorAll('#sw button').forEach(x=>x.classList.toggle('on',x.dataset.c.toLowerCase()===S.accent.toLowerCase()));
   document.getElementById('sColor').value=S.accent;
   document.getElementById('sSpd').value=S.spd;document.getElementById('spdv').textContent=(+S.spd).toFixed(1)+'×';
   document.getElementById('sWc').value=S.wc;document.getElementById('wcv').textContent=Math.round(S.wc*100)+'%';
@@ -957,12 +958,16 @@ function apply(){
   if(chartsInit)renderAllCharts();
   thumbsLater();
 }
+/* 主色調色塊：目前風格的主色＋搭配色（風格沒有搭配色時用珊瑚版的三色） */
+function swatches(){const box=document.getElementById('sw'),T=THEMES[S.theme]||THEMES.street,cs=[...new Set([T.acc,...(T.pal||[]),'#E9A576','#C49595','#4F6B6B'].map(c=>c.toUpperCase()))].slice(0,4);
+  if(box.dataset.cs===cs.join())return;box.dataset.cs=cs.join();box.querySelectorAll('button[data-c]').forEach(b=>b.remove());
+  box.prepend(...cs.map(c=>{const b=document.createElement('button');b.dataset.c=c;b.style.background=c;b.title=c;return b}))}
 function set(k,v,replay){S[k]=v;apply();if(replay)go(cur,0,true)}
 if(!PLAYER){
 document.getElementById('sTrans').onchange=e=>{set('trans',e.target.value);go(cur===slides.length-1?0:cur+1,1)};
 document.querySelectorAll('.seg[data-k]').forEach(g=>g.onclick=e=>{const v=e.target.dataset.v;if(!v)return;if(g.dataset.k==='auto'){set('auto',v);schedule()}else set(g.dataset.k,v,true)});
-document.querySelectorAll('#sw button').forEach(x=>x.onclick=()=>set('accent',x.dataset.c));
-document.getElementById('sColor').oninput=e=>set('accent',e.target.value);
+document.getElementById('sw').addEventListener('click',e=>{const b=e.target.closest('button[data-c]');if(b){S.accentSet=1;set('accent',b.dataset.c)}});
+document.getElementById('sColor').oninput=e=>{S.accentSet=1;set('accent',e.target.value)};
 document.getElementById('sSpd').oninput=e=>set('spd',+e.target.value);
 document.getElementById('sSpd').onchange=()=>go(cur,0,true);
 document.getElementById('sWc').oninput=e=>set('wc',+e.target.value);
@@ -1979,12 +1984,12 @@ if(!PLAYER){
     edEl.querySelectorAll('[style]').forEach(x=>x.removeAttribute('style'));edEl.querySelectorAll('span,b,i,u,strong,em,font').forEach(x=>x.replaceWith(...x.childNodes));
     saveS();saveEd();savedRange=null;showText();toast('已恢復預設樣式')};
   /* --- color / bold / italic / underline --- */
-  const tB=document.getElementById('tB'),tI=document.getElementById('tI'),tU=document.getElementById('tU'),tColor=document.getElementById('tColor'),tDelBox=document.getElementById('tDelBox');
+  const tB=document.getElementById('tB'),tI=document.getElementById('tI'),tU=document.getElementById('tU'),tColor=document.getElementById('tColor'),tM=document.getElementById('tM'),tDelBox=document.getElementById('tDelBox');
   const toHex=c=>{const m=String(c).match(/\d+/g);return m?'#'+m.slice(0,3).map(x=>(+x).toString(16).padStart(2,'0')).join(''):'#000000'};
   function restoreSel(){const s=getSelection();let r=selRange();if(!r&&savedRange&&!savedRange.collapsed){edEl.focus({preventScroll:true});s.removeAllRanges();s.addRange(savedRange);r=savedRange}return r}
   function styleState(){if(!edEl)return;const r=selRange()||(savedRange&&!savedRange.collapsed?savedRange:null),n=r?(r.startContainer.nodeType===1?r.startContainer:r.startContainer.parentNode):edEl,cs=getComputedStyle(n);
     tB.classList.toggle('on',+cs.fontWeight>=600);tI.classList.toggle('on',cs.fontStyle==='italic');
-    let u=false;for(let x=n;x&&x!==edEl.parentNode;x=x.parentNode){if(x.nodeType===1&&/underline/.test(getComputedStyle(x).textDecorationLine)){u=true;break}}tU.classList.toggle('on',u);
+    let u=false;for(let x=n;x&&x!==edEl.parentNode;x=x.parentNode){if(x.nodeType===1&&/underline/.test(getComputedStyle(x).textDecorationLine)){u=true;break}}tU.classList.toggle('on',u);tM.classList.toggle('on',!!markOf(n));
     tColor.value=toHex(cs.color);document.querySelectorAll('#textGrp .tcol button').forEach(b=>b.classList.toggle('on',b.dataset.c.toLowerCase()===tColor.value.toLowerCase()));
     tDelBox.style.display=edEl.closest('.tbox')?'flex':'none'}
   const _show=showText;showText=function(){_show();styleState()};
@@ -1998,6 +2003,14 @@ if(!PLAYER){
       if(kind==='underline')t.td=/underline/.test(cs.textDecorationLine)?'none':'underline';
       if(kind==='color')t.color=val;applyStyles(edEl);saveS();thumbsLater()}
     showText()}
+  /* 標記重點：選取的文字包成 <mark>，外觀由右側「高亮樣式」決定；游標在重點裡再按一次就取消 */
+  function markOf(n){for(let x=n;x&&x!==edEl;x=x.parentNode)if(x.nodeName==='MARK')return x;return null}
+  tM.onclick=()=>{if(!edEl){toast('先點一下投影片上的文字');return}const r=restoreSel(),s=getSelection();
+    const at=r?r.commonAncestorContainer:(s.rangeCount&&edEl.contains(s.anchorNode)?s.anchorNode:null),m=at&&markOf(at.nodeType===1?at:at.parentNode);
+    if(m)m.replaceWith(...m.childNodes);
+    else if(r){const mk=document.createElement('mark');mk.appendChild(r.extractContents());mk.querySelectorAll('mark').forEach(x=>x.replaceWith(...x.childNodes));r.insertNode(mk);s.removeAllRanges();savedRange=null}
+    else{toast('先選取要標記成重點的文字');return}
+    edEl.normalize();saveEd();showText()};
   tB.onclick=()=>setStyle('bold');tI.onclick=()=>setStyle('italic');tU.onclick=()=>setStyle('underline');
   document.querySelectorAll('#textGrp .tcol button').forEach(b=>b.onclick=()=>setStyle('color',b.dataset.c));
   tColor.addEventListener('input',()=>setStyle('color',tColor.value));
