@@ -50,6 +50,16 @@ def check(path, h):
             continue
         lineno = h.count('\n', 0, mm.start()) + 1
         errs.append(f'{path}:{lineno}：直接用 localStorage.setItem(KEY…) 存檔。規則：存檔一律經過 saveS()（設定 S）或 saveEdits()（文字 EDITS），它們會跳過純簡報模式。修法：改成呼叫 saveS() 或 saveEdits()。')
+    # HTML 跳脫只有一個 escH()；各自再寫一份容易漏掉某個符號。escH 要是 function（會提前可用），寫成 const 在初始化時會出錯
+    for mm in re.finditer(r'\.replace\(\s*/\[[^\]]*&[^\]]*<[^\]]*\]/g', h):
+        line_start = h.rfind('\n', 0, mm.start()) + 1
+        line = h[line_start:h.find('\n', mm.start())]
+        if re.match(r'\s*(function escH\(|(const|let|var)\s+escH\s*=)', line):  # escH 本身（寫成 const 由下一條規則報）
+            continue
+        lineno = h.count('\n', 0, mm.start()) + 1
+        errs.append(f'{path}:{lineno}：自己寫了一份 HTML 跳脫（把 & < > 換成 &amp; 等）。規則：HTML 跳脫一律用 escH()。修法：刪掉這份，改成呼叫 escH(文字)。')
+    if re.search(r'\b(const|let|var)\s+escH\s*=', h):
+        errs.append(f'{path}：escH 寫成了 const／let。規則：escH 要用 function escH(s){{…}} 宣告，頁面初始化時（makeSlide）就會用到，const 那時還不能用。修法：改回 function 宣告。')
     return errs, deck
 
 

@@ -1166,7 +1166,8 @@ window.__buildPptx=buildPptx;
 const DPAL=['#DC9A8B','#E9A576','#CDA4A4','#4F6B6B','#EFBFBA','#B8877F','#F4C9A6','#9DB0AE','#E7B8A9','#7E9595'];
 let CACHE={};try{CACHE=JSON.parse(document.documentElement.dataset.cache||'{}')}catch(e){}
 const sig={},srcErr={};
-const escH=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* HTML 跳脫只用這一個 escH()。寫成 function 才會提前可用：頁面初始化時 makeSlide() 就會用到它。由 scripts/check_deck.py 把關 */
+function escH(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 const nf=v=>(Math.round(v*10)/10).toLocaleString('en-US',{maximumFractionDigits:1});
 function sheetId(u){const m=String(u||'').match(/\/d\/([a-zA-Z0-9_-]{20,})/),g=String(u||'').match(/[#&?]gid=(\d+)/);return m?{id:m[1],gid:g?g[1]:'0'}:null}
 const isDocUrl=u=>/docs\.google\.com\/document\/d\//.test(String(u||''));
@@ -1989,22 +1990,22 @@ if(!PLAYER){
 
 /* ---------------- PDF summary page (Claude) ---------------- */
 /* 試算表資料頁：data-src 的數字對應 srcN，內容由 renderSlide 依試算表自動產生 */
-function livePgHTML(k,title){const e=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function livePgHTML(k,title){
   const name=title||(S.srcName&&S.srcName[k])||(S.srcs&&S.srcs[k]&&S.srcs[k].name)||'資料頁',n=String(k).replace(/^src/,'');
-  return `<section class="slide live" data-deco="content" data-src="${e(n)}"><div class="deco"></div>
-  <div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>${e(name)}</h2><p class="a l" style="--d:.25s" data-ed>DATA · 內容會跟著試算表自動更新</p></div></div>
+  return `<section class="slide live" data-deco="content" data-src="${escH(n)}"><div class="deco"></div>
+  <div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>${escH(name)}</h2><p class="a l" style="--d:.25s" data-ed>DATA · 內容會跟著試算表自動更新</p></div></div>
   <div class="kpis"></div>
   <div class="card lcard a l" style="--d:.5s"><div class="insight" data-tx></div><div class="barsbox"></div></div>
   <div class="card rcard a r" style="--d:.65s"><div class="dbox"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="#F6E4E0" stroke-width="26"/><g class="dsegs" transform="rotate(-90 100 100)"></g></svg><div class="dctr"><b class="num" data-tx>0</b><span data-tx>總計</span></div></div><div class="dleg"></div></div>
   <div class="srcline" data-tx></div></section>`}
 function addLiveSlide(k){const sid='n'+Date.now().toString(36);S.added[sid]={from:'live:'+k,t:srcName(k)};const el=makeSlide(sid,'live:'+k);
   slides[cur].after(el);prepSlide(el);if(CACHE[k]&&!CACHE[k].doc)try{renderSlide(el,CACHE[k])}catch(e){}afterStructure(cur+1,1)}
-function pdfPgHTML(id){const e=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function pdfPgHTML(id){
   const p=(S.pdfs||{})[id]||{title:'PDF 摘要',subtitle:'',points:[],takeaway:'',name:'PDF'},n=(p.points||[]).join('').length+(p.takeaway||'').length,fs=n<=240?38:n<=400?34:n<=560?30:27;
-  return `<section class="slide docpg pdfpg" data-deco="content" data-pdf="${e(id)}"><div class="deco"></div>
-  <div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l dt" style="--d:.1s" data-ed>${e(p.title)}</h2><p class="a l" style="--d:.25s" data-ed>${e(p.subtitle||'PDF 摘要')}</p></div></div>
-  <div class="card docbox a" style="--d:.45s"><div class="docbody" style="font-size:${fs}px"><ul class="docsum">${(p.points||[]).map(x=>`<li data-ed>${e(x)}</li>`).join('')}</ul>${p.takeaway?`<p class="pdftk" data-ed>${e(p.takeaway)}</p>`:''}</div></div>
-  <div class="srcline">資料來源：${e(p.name)}・由 ${e(p.by||'AI')} 自動摘要（${e(p.at||'')}），重要數字請核對原文</div></section>`}
+  return `<section class="slide docpg pdfpg" data-deco="content" data-pdf="${escH(id)}"><div class="deco"></div>
+  <div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l dt" style="--d:.1s" data-ed>${escH(p.title)}</h2><p class="a l" style="--d:.25s" data-ed>${escH(p.subtitle||'PDF 摘要')}</p></div></div>
+  <div class="card docbox a" style="--d:.45s"><div class="docbody" style="font-size:${fs}px"><ul class="docsum">${(p.points||[]).map(x=>`<li data-ed>${escH(x)}</li>`).join('')}</ul>${p.takeaway?`<p class="pdftk" data-ed>${escH(p.takeaway)}</p>`:''}</div></div>
+  <div class="srcline">資料來源：${escH(p.name)}・由 ${escH(p.by||'AI')} 自動摘要（${escH(p.at||'')}），重要數字請核對原文</div></section>`}
 const SDK_URL='https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@1.6.0/+esm',LS='sheet-deck:';
 const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return''}},lsSet=(k,v)=>{try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}};
 const AIP={claude:{name:'Claude',mb:30,ph:'貼上 sk-ant- 開頭的金鑰（platform.claude.com）'},gemini:{name:'Gemini',mb:19,ph:'貼上 Google AI Studio 的金鑰（AIza… 或 AQ.…）'},openai:{name:'ChatGPT',mb:30,ph:'貼上 sk- 開頭的金鑰（platform.openai.com）'}};
