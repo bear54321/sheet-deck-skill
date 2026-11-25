@@ -92,6 +92,14 @@ def check(path, h):
             continue
         lineno = h.count('\n', 0, mm.start()) + 1
         errs.append(f"{path}:{lineno}：直接寫了頁面來源字串 '{mm.group(1)}:'。規則：新增頁的來源一律用 pageFrom(種類, id) 組、parseFrom(字串) 拆（這個格式存在使用者存檔裡，不能各寫各的）。修法：改成 pageFrom('{mm.group(1)}', id) 或 parseFrom(from)。")
+    # 頁面截圖一律用 snapEl()：直接呼叫 html2canvas 會複製整份文件，一頁要 2 秒以上（3D 空間要等很久）
+    for mm in re.finditer(r'\bhtml2canvas\(', h):
+        line_start = h.rfind('\n', 0, mm.start()) + 1
+        line = h[line_start:h.find('\n', mm.start())]
+        if re.match(r'\s*function snapEl\(', line):
+            continue
+        lineno = h.count('\n', 0, mm.start()) + 1
+        errs.append(f'{path}:{lineno}：直接呼叫 html2canvas()。規則：頁面截圖一律用 snapEl(元素, 解析度)，它只複製要截的頁面（直接呼叫會複製整份文件，一頁 2 秒以上）。修法：改成 await snapEl(元素, 解析度)。')
     return errs, deck
 
 

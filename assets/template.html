@@ -764,6 +764,10 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
    載入外部程式一律用 loadJS()（只有讀試算表的 JSONP 例外）；網址只寫一次。由 scripts/check_deck.py 把關 */
 const H2C_URL='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 function loadJS(u){return new Promise((ok,no)=>{if([...document.scripts].some(s=>s.src===u))return ok();const s=document.createElement('script');s.src=u;s.dataset.lazy=1;s.onload=ok;s.onerror=()=>no(new Error('無法載入 '+u));document.head.appendChild(s)})}
+/* 頁面截圖一律用 snapEl()：html2canvas 預設每截一次就複製整份文件（數千個元素），一頁要 2 秒以上；
+   ignoreElements 只留要截的元素和它的上層，畫面完全一樣、快 10 倍以上。由 scripts/check_deck.py 把關 */
+function snapEl(el,scale){return html2canvas(el,{width:1920,height:1080,windowWidth:1920,windowHeight:1080,scale,backgroundColor:'#FFFFFF',logging:false,
+  ignoreElements:n=>n.nodeType===1&&n!==document.body&&!!n.closest('body')&&!n.contains(el)&&!el.contains(n)})}
 /* 瀏覽器資料庫（IndexedDB）一律經過 idbOp(資料庫, 資料表, 'get'|'put'|'del', 鍵, 值)。
    資料庫名稱、版本 1、資料表名稱都不能改，否則使用者存過的 3D 模型、截圖會讀不到。由 scripts/check_deck.py 把關 */
 const IDB={};
@@ -1178,7 +1182,7 @@ async function buildPptx(){
           o.align='center';o.valign='middle';o.w=r.width*IN;o.margin=0}
         return{el,text:el.innerText.replace(/ /g,' '),o}});
       texts.forEach(t=>t.el.style.visibility='hidden');
-      const cv=await html2canvas(c,{width:1920,height:1080,windowWidth:1920,windowHeight:1080,scale:1.5,backgroundColor:'#FFFFFF',logging:false});
+      const cv=await snapEl(c,1.5);
       const sl=pptx.addSlide();sl.addImage({data:cv.toDataURL('image/jpeg',.92),x:0,y:0,w:13.333,h:7.5});
       texts.forEach(t=>sl.addText(t.text,t.o));
       (S.charts||[]).filter(ch=>ch.sid===slides[si].dataset.sid).forEach(ch=>addNativeChart(pptx,sl,ch));
@@ -1870,7 +1874,7 @@ async function spaceOpen(){if(SPACE.on||SPACE.busy)return;SPACE.busy=true;let ov
     try{const order=[...items].sort((a,b)=>Math.abs(a.i-P.k)-Math.abs(b.i-P.k));
       for(const it of order){if(!SPACE.on)break;if(it.snap)continue;const c=pageClone(it.s);hs.innerHTML='';hs.appendChild(c);try{inlineSvg(c)}catch(_){}
         await new Promise(r=>requestAnimationFrame(r));
-        try{const cc=await html2canvas(c,{width:1920,height:1080,windowWidth:1920,windowHeight:1080,scale:.75,backgroundColor:'#FFFFFF',logging:false});
+        try{const cc=await snapEl(c,.75);
           if(!SPACE.on)break;SNAPC.set(it.key,cc);useSnap(it,cc);cc.toBlob(b=>{if(b)snapDB('put',snapId(it),{h:it.key,blob:b})},'image/jpeg',.88)}catch(e){console.warn(e)}
         progress&&progress(++done);await new Promise(r=>setTimeout(r,0))}}
     finally{hs.remove()}}
@@ -1904,7 +1908,7 @@ async function spaceOpen(){if(SPACE.on||SPACE.busy)return;SPACE.busy=true;let ov
   P.k=Math.max(0,Math.min(N-1,cur));resize();const o=overPose();cam.position.copy(o.p);cam.quaternion.copy(o.q);P.over=true;ui();
   if(!document.fullscreenElement&&document.documentElement.requestFullscreen){SPACE.fs=true;document.documentElement.requestFullscreen().catch(()=>{SPACE.fs=false})}
   SPACE.raf=requestAnimationFrame(step);
-  /* 先把頁面截圖準備好再起飛：截圖每頁要 0.6–0.8 秒且會卡住畫面，不能和飛行同時進行 */
+  /* 先把頁面截圖準備好再起飛：截圖會短暫卡住畫面（snapEl 每頁約 0.2 秒），不能和飛行同時進行 */
   (async()=>{P.prep=true;const pr=ov.querySelector('.hprep');await loadSnaps();const todo=items.filter(it=>!it.snap).length;
     if(todo&&SPACE.on){pr.style.display='';pr.textContent='準備頁面中… 0 / '+todo;await snapAll(d=>{pr.textContent='準備頁面中… '+d+' / '+todo+'（只有第一次或改過的頁面需要）'})}
     pr.style.display='none';P.prep=false;if(SPACE.on)setTimeout(()=>{if(SPACE.on)goTo(P.k)},todo?150:700)})();

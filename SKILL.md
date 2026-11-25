@@ -76,7 +76,7 @@ description: 製作「網頁動畫簡報＋演示控制台」：單一 HTML，�
 - Google 試算表用 JSONP（`gviz/tq?tqx=out:json;responseHandler:...`）讀，才能在 `file://` 運作；`fetch` 會被擋。
 - Google 文件沒有 gviz/JSONP，只能 `fetch('…/document/d/ID/export?format=txt')`：從 `http://localhost` 可以（Google 回 `Access-Control-Allow-Origin: *`），從 `file://` 一定失敗。文件連結也符合 `sheetId()` 的格式，判斷來源類型要先用 `isDocUrl()`。
 - ECharts 用 cdnjs 5.5.0（5.5.1 不存在）。
-- 3D 空間模式的頁面截圖（html2canvas 每頁 0.6–0.8 秒、會卡住畫面）一律在起飛前做完（顯示「準備頁面中」），存進 IndexedDB `sheet-deck-snaps`，快取鑰匙排除頁尾「更新於」時間；WebGL 解析度上限 1.25 倍，只在鏡頭或頁面移動時重畫；背景裝飾畫在 WebGL 裡，不要用網頁元素每格更新。
+- 3D 空間模式的頁面截圖（一律用 `snapEl()`，每頁約 0.2 秒；直接呼叫 html2canvas 會複製整份文件，一頁 2 秒以上。截圖會短暫卡住畫面）一律在起飛前做完（顯示「準備頁面中」），存進 IndexedDB `sheet-deck-snaps`，快取鑰匙排除頁尾「更新於」時間；WebGL 解析度上限 1.25 倍，只在鏡頭或頁面移動時重畫；背景裝飾畫在 WebGL 裡，不要用網頁元素每格更新。
 - 3D 空間模式**不要**用 CSS 3D（`preserve-3d` 或傾斜的 `matrix3d`）畫頁面：Chrome 在部分 Mac 上會把傾斜的網頁元素切成碎條或只畫一部分（縮放、改視窗大小時最明顯）。範本做法是：飛行與全貌用 WebGL 畫頁面截圖（html2canvas），停下來時才顯示正對螢幕、不傾斜的真實頁面。
 - 跳舞角色的大小要用動畫姿勢下的蒙皮外框計算（`Box3.setFromObject(model,true)`），否則會過大被裁切。
 - 360° 展示的 canvas 尺寸要用 `style.setProperty(...,'important')` 設，否則被 CSS 蓋掉。
