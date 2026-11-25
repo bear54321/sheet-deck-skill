@@ -539,7 +539,7 @@ body[data-anim=off] .chartbox{animation:none!important}
 [data-ed][contenteditable]:focus{outline:2px dashed rgba(31,157,99,.6);outline-offset:4px;border-radius:4px}
 
 .tsty{display:flex;gap:8px}
-.tsty button{flex:1;height:40px;border:1px solid var(--ui-line);background:#fff;border-radius:10px;font-size:18px;color:#444;cursor:pointer}
+.tsty button{flex:1;height:40px;white-space:nowrap;padding:0 4px;border:1px solid var(--ui-line);background:#fff;border-radius:10px;font-size:18px;color:#444;cursor:pointer}
 .tsty button.on{background:#E9F6EF;border-color:var(--ui);color:var(--ui)}
 .tcol{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
 .tcol button{aspect-ratio:1;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #ddd;cursor:pointer;padding:0}
@@ -676,7 +676,7 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
     <div class="tpre"><button data-sz="20">小</button><button data-sz="28">內文</button><button data-sz="40">副標</button><button data-sz="66">標題</button><button data-sz="110">特大</button></div>
     <div class="tip" id="tScope" style="margin-top:10px"></div>
     <label class="h" style="margin-top:16px">樣式</label>
-    <div class="tsty"><button id="tB" title="粗體（⌘/Ctrl+B）"><b>B</b></button><button id="tI" title="斜體（⌘/Ctrl+I）"><i>I</i></button><button id="tU" title="底線（⌘/Ctrl+U）"><u>U</u></button><button id="tM" title="標記重點（選取文字後按；再按一次取消）。外觀由「高亮樣式」決定"><mark style="padding:0 .2em">重點</mark></button></div>
+    <div class="tsty"><button id="tB" title="粗體（⌘/Ctrl+B）"><b>B</b></button><button id="tI" title="斜體（⌘/Ctrl+I）"><i>I</i></button><button id="tU" title="底線（⌘/Ctrl+U）"><u>U</u></button><button id="tM" title="標記重點（選取文字後按；再按一次取消）。外觀由「高亮樣式」決定"><mark style="padding:0 .1em;font-size:15px">重點</mark></button></div>
     <label class="h" style="margin-top:16px">文字顏色</label>
     <div class="tcol"><button data-c="#4A5656" style="background:#4A5656" title="深灰綠"></button><button data-c="#DC9A8B" style="background:#DC9A8B" title="珊瑚粉"></button><button data-c="#E39A6E" style="background:#E39A6E" title="蜜桃橘"></button><button data-c="#C49595" style="background:#C49595" title="藕粉"></button><button data-c="#4F6B6B" style="background:#4F6B6B" title="墨綠"></button><button data-c="#C0503F" style="background:#C0503F" title="強調紅"></button><button data-c="#999999" style="background:#999999" title="灰"></button><button data-c="#FFFFFF" style="background:#FFFFFF" title="白"></button></div>
     <div class="tcc"><span>自訂</span><input type="color" id="tColor"></div>
