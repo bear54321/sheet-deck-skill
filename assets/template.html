@@ -609,6 +609,7 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
 #space{position:fixed;inset:0;z-index:9000;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#FFF8F5 0%,#F8E8E2 55%,#EFD9D1 100%)}
 #space .sgl{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
 #space .slive{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#space .spanel .tbox{border-color:transparent!important}#space .spanel .tbox .grip,#space .spanel .tbox .h,#space .spanel .chartbox .h{display:none!important}#space .spanel .chartbox{outline:none!important}
 #space .spanel{position:absolute;left:0;top:0;transform-origin:0 0;width:1920px;height:1080px;overflow:hidden;background:#fff;border-radius:26px;pointer-events:auto;cursor:pointer}
 #space .sbg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 #space .hprep{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(255,255,255,.94);padding:14px 28px;border-radius:999px;font-size:17px;color:#7a5a52;box-shadow:0 10px 30px rgba(120,70,60,.15);pointer-events:none;white-space:nowrap}
@@ -1852,7 +1853,9 @@ async function spaceOpen(){if(SPACE.on||SPACE.busy)return;SPACE.busy=true;let ov
   /* 停下時：顯示真實頁面（正對螢幕，只做平移與縮放） */
   let liveI=-1;const liveK=()=>innerHeight/(2*fitD()*tanH());
   function liveMode(){const want=(!P.over&&!P.anim&&items[P.k].p===0)?P.k:-1;
-    if(want!==liveI){if(liveI>=0)items[liveI].wrap.style.display='none';liveI=want;if(want>=0)items[want].wrap.style.display=''}
+    /* 停下來的頁面要像一般播放一樣播進場動畫：pageClone() 給的是靜止版（.static），顯示時換成 .active 並從頭播；離開時換回靜止版，下次停下再播一次 */
+    if(want!==liveI){if(liveI>=0){const o=items[liveI];o.wrap.style.display='none';o.c.classList.replace('active','static')}liveI=want;
+      if(want>=0){const it=items[want];it.c.classList.remove('static','active');it.wrap.style.display='';void it.c.offsetWidth;it.c.classList.add('active')}}
     if(liveI>=0){const k=liveK(),w=items[liveI].wrap;w.style.transform=`translate(${((innerWidth-1920*k)/2).toFixed(2)}px,${((innerHeight-1080*k)/2).toFixed(2)}px) scale(${k.toFixed(5)})`}}
   /* 3D 模型：只在停留的那一頁播放 */
   const live=new Map();
