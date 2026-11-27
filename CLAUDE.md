@@ -31,7 +31,7 @@ Claude Code skill「sheet-deck」的原始碼：製作有演示控制台的網�
 一個約 2200 行的檔案，依序是：`<style>`（介面外殼 → 投影片 → 裝飾動畫 → 版型／風格）、一張封面 `<section class="slide" data-deco="cover">`、控制台 HTML、一個大 `<script>`。
 
 `<script>` 裡的主要流程：
-1. **裝飾產生器**：`makeDeco(type,sid)` 產生每頁的 SVG，裡面同時放珊瑚版型（`.g-coral`）與街景版型（`.g-street`，由 `streetDeco()` 畫）兩套圖，CSS 依 `<html data-layout>` 只顯示一套。`type` 是 `cover` 或 `content`；`sid` 當亂數種子，同一頁每次畫出來一樣。插圖全部用 SVG 程式畫，**不嵌外部圖片**。
+1. **裝飾產生器**：`makeDeco(type,sid)` 產生每頁的 SVG，裡面同時放珊瑚版型（`.g-coral`）、街景版型（`.g-street`，由 `streetDeco()` 畫）與墨金版型（`.g-ink`，由 `inkDeco()` 畫）三套圖，CSS 依 `<html data-layout>` 只顯示一套。`type` 是 `cover` 或 `content`；`sid` 當亂數種子，同一頁每次畫出來一樣。插圖全部用 SVG 程式畫，**不嵌外部圖片**。
 2. **狀態**：`DEF` 是預設值，`S` 是目前設定（存 `localStorage[KEY+':set']`），`EDITS` 是使用者改過的文字（存 `KEY+':ed'`），`KEY='sheet-deck:'+location.pathname`。AI 金鑰另存 `sheet-deck:key:<provider>`，不放進 `S`，所以不會被匯出。
 3. **頁面管理**：`TPL` 存原始頁面；新增頁記在 `S.added[sid]={from}`，由 `makeSlide()` 重建（`from` 可為 `blank`、`live:srcN`、`doc:srcN`、`pdf:id` 或既有頁的 sid）；`prepSlide()` 填裝飾並套用 `EDITS`；`applyOrder()` 依 `S.order` 排序。
 4. **`apply()`**：把 `S` 套到畫面（版型、風格、主色、動畫開關 `body[data-anim]`、小圖案開關 `body[data-leaf]`）。

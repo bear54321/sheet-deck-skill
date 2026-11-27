@@ -415,7 +415,7 @@ body[data-anim=off] .chartbox{animation:none!important}
    coral＝範本原本的珊瑚扁平風；其他 15 種取材自 Lemo-Opuscar 風格庫（CC BY-NC 4.0），只換 --th-* 變數與少數規則。
    以下通用規則只在非 coral 時生效，所以原本的樣子完全不變。 */
 
-/* ---------------- 版型（data-layout）：青綠街景 street／珊瑚扁平 coral ----------------
+/* ---------------- 版型（data-layout）：青綠街景 street／珊瑚扁平 coral／墨金 inkgold（規則在下方）----------------
    版型決定構圖（外框、樹枝、草、人行道、房子）；風格（data-theme）只換顏色、字體、質感。 */
 .g-street{display:none}
 :root[data-layout=street] .g-street{display:inline}
@@ -460,11 +460,39 @@ body[data-anim=off] .chartbox{animation:none!important}
 .slide.active .g-street .sw-br{animation:brIn calc(1.2s*var(--spd)) cubic-bezier(.2,.8,.2,1) both,brSway 7s calc(1.2s*var(--spd)) ease-in-out infinite}
 @keyframes brIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
 @keyframes brSway{0%,100%{transform:rotate(0)}50%{transform:rotate(1.2deg)}}
+/* ---------------- 版型：墨金 inkgold ----------------
+   近黑底、單一強調色（var(--accent)）、大字標題靠左、等寬字型標籤、細線框。插圖由 inkDeco() 用 SVG 畫：角落裁切記號、封面的格線與同心圓、內頁底部的刻度尺。
+   線條進場沿用 .draw（pathLength=1），所以縮圖、離場、關閉動畫都已處理。原創版型，不取自任何外部範本。 */
+.g-ink{display:none}
+:root[data-layout=inkgold] .g-ink{display:inline}
+:root[data-layout=inkgold] .g-coral{display:none}
+:root[data-layout=inkgold]{--ig-mono:'SF Mono',Menlo,Consolas,'Noto Sans TC',monospace}
+.igl{fill:none;stroke:var(--th-line,rgba(226,182,92,.3));stroke-width:1.5}
+.igg{fill:none;stroke:var(--th-grid,rgba(226,182,92,.12));stroke-width:1}
+.iga{fill:none;stroke:var(--accent);stroke-width:2}
+.igf{fill:var(--accent)}
+.igr{transform-box:view-box}
+.slide.active .igr{animation:spin 120s linear infinite}
+.slide.active .igp{animation:igPulse 3.2s ease-in-out infinite}
+@keyframes igPulse{0%,100%{opacity:1}50%{opacity:.25}}
+body[data-anim=off] .igp,.slide.leaving .igp{animation:none!important}
+:root[data-layout=inkgold] .hd{justify-content:flex-start;align-items:flex-start;padding:0 150px;top:88px;gap:40px}
+:root[data-layout=inkgold] .hn{font-family:var(--ig-mono);font-size:24px;font-weight:500;color:var(--accent)!important;line-height:1;letter-spacing:3px;border-top:3px solid var(--accent);padding-top:14px;min-width:72px;margin-top:6px}
+:root[data-layout=inkgold] .hd h2{font-size:64px;letter-spacing:1px;line-height:1.15}
+:root[data-layout=inkgold] .hd p{font-family:var(--ig-mono);font-size:19px;letter-spacing:3px;margin-top:16px}
+:root[data-layout=inkgold] .slide[data-deco=cover] .hd{top:300px;flex-direction:column;gap:34px}
+:root[data-layout=inkgold] .slide[data-deco=cover] .hd h2{font-size:136px;line-height:1.08;letter-spacing:0;max-width:1300px}
+:root[data-layout=inkgold] .slide[data-deco=cover] .hd p{font-size:26px;border-top:1px solid var(--th-line,rgba(226,182,92,.3));padding-top:26px;margin-top:34px;max-width:1100px}
+/* 多一層 .slide：要蓋過後面「非 coral 風格」的卡片框線通用規則 */
+:root[data-layout=inkgold] .slide :is(.card,.kp,.chartbox){border:1px solid var(--th-line)!important;border-top:3px solid var(--accent)!important;border-radius:2px!important}
+:root[data-layout=inkgold] .slide .kp .v.ac{color:var(--accent)}
+:root[data-layout=inkgold] :is(.kp .l,.kp .s,.srcline,.legend,.cs .lb,.cover-k,.chip,.dleg .lg){font-family:var(--ig-mono);letter-spacing:1.5px}
+:root[data-layout=inkgold] :is(.kp .v,.rnum,.dctr b,.fm .big){font-variant-numeric:tabular-nums;font-weight:900}
 .static .gb,.static .lf,.static .sw-br,.slide.leaving .gb,.slide.leaving .lf,.slide.leaving .sw-br,body[data-anim=off] .gb,body[data-anim=off] .lf,body[data-anim=off] .sw-br{animation:none!important}
 #ddTh .menu{left:50%;right:auto;transform:translateX(-50%);width:600px;padding:10px}
 #ddTh.open .menu{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 #themeBox .thh{grid-column:1/-1;font-size:14px;font-weight:700;color:#333;padding:8px 8px 6px}
-#themeBox .thl{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:4px;padding-bottom:6px;border-bottom:1px solid var(--ui-line);margin-bottom:2px}
+#themeBox .thl{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding-bottom:6px;border-bottom:1px solid var(--ui-line);margin-bottom:2px}
 #themeBox .thh small{font-weight:400;color:#999;margin-left:8px;font-size:12px}
 #themeBox button{padding:8px;gap:10px;font-size:14px;align-items:center}
 #themeBox button.on{background:#e8f5ee;box-shadow:inset 0 0 0 1.5px var(--ui)}
@@ -527,6 +555,8 @@ body[data-anim=off] .chartbox{animation:none!important}
 :root[data-theme=silent] .slide::before{content:'';position:absolute;inset:30px;border:3px double rgba(232,225,208,.55);border-radius:18px;pointer-events:none;z-index:1}
 :root[data-theme=watercolor]{--th-bg:radial-gradient(ellipse at 15% 20%,rgba(232,116,59,.08),transparent 45%),radial-gradient(ellipse at 85% 75%,rgba(110,160,205,.12),transparent 50%),#FBF8F2;--th-ink:#2D3A4A;--th-ink2:#3A4757;--th-sub:#6B7889;--th-card:rgba(255,255,255,.65);--th-line:rgba(110,160,205,.5);--th-h:#2F5E8C;--th-grid:rgba(110,160,205,.2);--th-d1:rgba(110,160,205,.35);--th-d2:rgba(232,116,59,.35);--th-d3:rgba(110,190,150,.4);--th-d4:#6EA0CD;--th-d5:#6EA0CD;--th-fb:'LXGW WenKai TC','Kaiti TC',serif;--th-ft:'LXGW WenKai TC','Kaiti TC',serif;--th-tw:700}
 :root[data-theme=watercolor] .deco .blobm{filter:blur(5px)}
+:root[data-theme=inkgold]{--th-bg:radial-gradient(ellipse at 82% 8%,rgba(226,182,92,.09),transparent 52%),radial-gradient(ellipse at 6% 100%,rgba(226,182,92,.04),transparent 45%),#0E0D0B;--th-ink:#F2ECDF;--th-ink2:#D3CCBE;--th-sub:#8E8778;--th-card:rgba(255,255,255,.025);--th-line:rgba(226,182,92,.3);--th-h:#F2ECDF;--th-grid:rgba(226,182,92,.12);--th-d1:rgba(226,182,92,.16);--th-d2:#E2B65C;--th-d3:#6E9E9A;--th-d4:#E2B65C;--th-d5:#E2B65C;--th-fb:'Noto Sans TC','PingFang TC',sans-serif;--th-ft:'Noto Sans TC','PingFang TC',sans-serif;--th-tw:900}
+:root[data-theme=inkgold][data-layout]{--th-frame:#E2B65C;--th-onframe:#0E0D0B}
 
 .tsz{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .tsz button{width:46px;height:42px;border:1px solid var(--ui-line);background:#fff;border-radius:10px;font-size:18px;font-weight:700;color:#444;cursor:pointer}
@@ -814,8 +844,34 @@ function makeDeco(type,sid){
   out.push(dots(66,560,2,3,40,14,O));
   out.push(dots(1792,680,2,5,40,14,O));
   out.push(`<g class="in-br">${clock(1835,420,58)}</g>`);
-  return `<svg viewBox="0 0 1920 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g class="g-coral">${out.join('')}</g><g class="g-street">${streetDeco(type,sid)}</g></svg>`;
+  return `<svg viewBox="0 0 1920 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g class="g-coral">${out.join('')}</g><g class="g-street">${streetDeco(type,sid)}</g><g class="g-ink">${inkDeco(type,sid)}</g></svg>`;
 }
+/* ---------------- 墨金版型的插圖 ----------------
+   角落裁切記號（一直都在，像外框）；封面：直向格線、右上角的同心圓（外圈虛線慢慢轉）、一個閃爍的小點；內頁：右上小圓、底部刻度尺。
+   顏色用 class（.igl 細線、.igg 格線、.iga／.igf 強調色），換風格或主色調時跟著變。線條用 .draw 畫出來。 */
+function inkDeco(type,sid){const o=[],big=type==='cover',r=R(sid*53+5),dl=s=>`style="animation-delay:calc(${s}s*var(--spd))"`;
+  const ln=(x1,y1,x2,y2,c,d)=>`<path class="${c} draw" pathLength="1" d="M${x1},${y1}L${x2},${y2}" ${dl(d)}/>`;
+  /* 角落裁切記號 */
+  const m=56,k=44;[[m,m,1,1],[1920-m,m,-1,1],[m,1080-m,1,-1],[1920-m,1080-m,-1,-1]].forEach(([x,y,sx,sy],i)=>{
+    o.push(`<path class="igl draw" pathLength="1" d="M${x},${y+sy*k}L${x},${y}L${x+sx*k},${y}" ${dl(.1+i*.08)}/>`)});
+  if(big){
+    const g=[];for(let i=1;i<12;i++){const x=Math.round(i*1920/12);g.push(ln(x,0,x,1080,'igg',.05*i))}
+    o.push(`<g class="leaf">${g.join('')}</g>`);
+    const cx=1560,cy=250;
+    o.push(`<g class="leaf"><circle class="igl draw" pathLength="1" cx="${cx}" cy="${cy}" r="300" ${dl(.4)}/>`
+      +`<circle class="iga draw" pathLength="1" cx="${cx}" cy="${cy}" r="190" ${dl(.7)}/>`
+      +`<g class="igr" style="transform-origin:${cx}px ${cy}px"><circle class="igl" cx="${cx}" cy="${cy}" r="420" stroke-dasharray="4 14"/></g>`
+      +`<circle class="igf igp" cx="${cx+190}" cy="${cy}" r="9"/>`
+      +ln(cx-480,cy,cx+480,cy,'igg',.9)+ln(cx,cy-480,cx,cy+480,'igg',1)+`</g>`);
+    o.push(`<g class="leaf">${ln(150,940,520,940,'iga',1.1)}</g>`);
+  }else{
+    const cx=1740,cy=150,rr=48+Math.round(r()*20);
+    o.push(`<g class="leaf"><circle class="igl draw" pathLength="1" cx="${cx}" cy="${cy}" r="${rr}" ${dl(.3)}/><circle class="igf igp" cx="${cx}" cy="${cy-rr}" r="6"/></g>`);
+    /* 底部刻度尺：細線＋刻度，左端一段強調色 */
+    const t=[];for(let x=150;x<=1770;x+=54){const h=(x-150)%270===0?16:8;t.push(`<path class="igl" d="M${x},1012L${x},${1012-h}"/>`)}
+    o.push(`<g class="leaf">${ln(150,1012,1770,1012,'igl',.2)}<g class="igt">${t.join('')}</g>${ln(150,1012,150+162+Math.round(r()*4)*54,1012,'iga',.5)}</g>`);
+  }
+  return o.join('')}
 
 
 /* ---------------- state ---------------- */
@@ -827,13 +883,14 @@ const KEY='sheet-deck:deck:'+DECK_ID;
 /* 一次性搬移：舊版用網址路徑當鍵名。第一份打開的簡報接手舊資料，然後刪掉舊鍵，避免再被別份簡報讀到 */
 if(!PLAYER)try{const OLD='sheet-deck:'+location.pathname;['set','ed','ui'].forEach(s=>{const v=localStorage.getItem(OLD+':'+s);if(v==null)return;if(localStorage.getItem(KEY+':'+s)==null)localStorage.setItem(KEY+':'+s,v);localStorage.removeItem(OLD+':'+s)})}catch(e){}
 /* ---------------- 簡報風格 ---------------- */
-const THEMES={street:{n:'青綠街景版型（預設）',e:'Teal Street',acc:'#469C9B',pal:['#E0A43C','#D35454','#6E9A3E','#7FA8C9','#9C8B7E'],sw:['#469C9B','#FFFFFF','#469C9B']},coral:{n:'珊瑚扁平版型',e:'Flat Coral',acc:'#DC9A8B',sw:['#FFFFFF','#DC9A8B','#FFFFFF']},woodcut:{n:'木刻版畫',e:'Woodcut Print',acc:'#A8352B',dark:0,pal:['#17130F', '#6E6250', '#B5652B'],sw:['#EDE3CE', '#17130F', '#F1E8D5']},inkwash:{n:'中國水墨',e:'Chinese Ink Wash',acc:'#B23A2E',dark:0,pal:['#3A3A3A', '#8A857C', '#B9B3A8'],sw:['#F4EFE4', '#D9D4CA', '#1E1E1E']},ukiyoe:{n:'浮世繪',e:'Ukiyo-e',acc:'#C8442E',dark:0,pal:['#233B5C', '#6E9AC0', '#D8B26E'],sw:['#EFE4CC', '#233B5C', '#F3E9D2']},papercut:{n:'紅色窗花剪紙',e:'Red Paper-cut',acc:'#D9A21B',dark:0,pal:['#B3261E', '#7A1A14', '#E8786E'],sw:['#F5EDDC', '#B3261E', '#F7EEDC']},riso:{n:'孔版印刷',e:'Risograph Print',acc:'#0078BF',dark:0,pal:['#FF4FA3', '#FFD100', '#00A95C'],sw:['#F4F0E6', '#FF4FA3', '#F4F0E6']},pop:{n:'普普藝術',e:'Pop Art',acc:'#E2231A',dark:0,pal:['#1E5BD6', '#111111', '#FF8A00'],sw:['#FFE14D', '#111111', '#FFFFFF']},swiss:{n:'瑞士動態排版',e:'Swiss Motion Graphics',acc:'#E30613',dark:0,pal:['#111111', '#8C8C8C', '#C9C9C9'],sw:['#F2F2EE', '#E30613', '#FFFFFF']},bauhaus:{n:'包浩斯幾何',e:'Bauhaus Shapes',acc:'#D62E2E',dark:0,pal:['#1F4E9C', '#F2C230', '#1A1A1A'],sw:['#EFE8D8', '#1F4E9C', '#F2C230']},artdeco:{n:'裝飾藝術',e:'Art Deco',acc:'#D4AF37',dark:1,pal:['#1E9C8C', '#E8D9A8', '#8E7A3A'],sw:['#12161F', '#0A0D13', '#D4AF37']},blueprint:{n:'工程藍圖',e:'Blueprint',acc:'#FFD23F',dark:1,pal:['#EAF2FF', '#8FC1FF', '#FF8A65'],sw:['#1D4F91', '#173F75', '#EAF2FF']},chalk:{n:'黑板粉筆',e:'Chalkboard',acc:'#F5D46B',dark:1,pal:['#F1F1E6', '#8FD3F5', '#F59AB0'],sw:['#25382F', '#1B2A23', '#F1F1E6']},neon:{n:'霓虹燈管',e:'Neon Tubes',acc:'#FF3FA4',dark:1,pal:['#5CF2FF', '#B6FF3F', '#FFD23F'],sw:['#0C0A14', '#130F20', '#5CF2FF']},crt:{n:'CRT 字元終端',e:'CRT ASCII Terminal',acc:'#FFB000',dark:1,pal:['#3DFF7A', '#2BC4FF', '#9DFFB8'],sw:['#050A06', '#08140B', '#3DFF7A']},silent:{n:'1920s 默片',e:'1920s Silent Film',acc:'#C9B27C',dark:1,pal:['#E8E1D0', '#8E8673', '#5E574A'],sw:['#1A1714', '#0E0C0A', '#E8E1D0']},watercolor:{n:'水彩筆刷',e:'Watercolor Brush',acc:'#E8743B',dark:0,pal:['#6EA0CD', '#6EBE96', '#C68FCB'],sw:['#FBF8F2', '#BCD3E6', '#2F5E8C']}};
+const THEMES={street:{n:'青綠街景版型（預設）',e:'Teal Street',acc:'#469C9B',pal:['#E0A43C','#D35454','#6E9A3E','#7FA8C9','#9C8B7E'],sw:['#469C9B','#FFFFFF','#469C9B']},coral:{n:'珊瑚扁平版型',e:'Flat Coral',acc:'#DC9A8B',sw:['#FFFFFF','#DC9A8B','#FFFFFF']},inkgold:{n:'墨金版型',e:'Ink & Gold',acc:'#E2B65C',dark:1,pal:['#F2ECDF','#8E8778','#C7834A','#6E9E9A'],sw:['#0E0D0B','#1A1814','#E2B65C']},woodcut:{n:'木刻版畫',e:'Woodcut Print',acc:'#A8352B',dark:0,pal:['#17130F', '#6E6250', '#B5652B'],sw:['#EDE3CE', '#17130F', '#F1E8D5']},inkwash:{n:'中國水墨',e:'Chinese Ink Wash',acc:'#B23A2E',dark:0,pal:['#3A3A3A', '#8A857C', '#B9B3A8'],sw:['#F4EFE4', '#D9D4CA', '#1E1E1E']},ukiyoe:{n:'浮世繪',e:'Ukiyo-e',acc:'#C8442E',dark:0,pal:['#233B5C', '#6E9AC0', '#D8B26E'],sw:['#EFE4CC', '#233B5C', '#F3E9D2']},papercut:{n:'紅色窗花剪紙',e:'Red Paper-cut',acc:'#D9A21B',dark:0,pal:['#B3261E', '#7A1A14', '#E8786E'],sw:['#F5EDDC', '#B3261E', '#F7EEDC']},riso:{n:'孔版印刷',e:'Risograph Print',acc:'#0078BF',dark:0,pal:['#FF4FA3', '#FFD100', '#00A95C'],sw:['#F4F0E6', '#FF4FA3', '#F4F0E6']},pop:{n:'普普藝術',e:'Pop Art',acc:'#E2231A',dark:0,pal:['#1E5BD6', '#111111', '#FF8A00'],sw:['#FFE14D', '#111111', '#FFFFFF']},swiss:{n:'瑞士動態排版',e:'Swiss Motion Graphics',acc:'#E30613',dark:0,pal:['#111111', '#8C8C8C', '#C9C9C9'],sw:['#F2F2EE', '#E30613', '#FFFFFF']},bauhaus:{n:'包浩斯幾何',e:'Bauhaus Shapes',acc:'#D62E2E',dark:0,pal:['#1F4E9C', '#F2C230', '#1A1A1A'],sw:['#EFE8D8', '#1F4E9C', '#F2C230']},artdeco:{n:'裝飾藝術',e:'Art Deco',acc:'#D4AF37',dark:1,pal:['#1E9C8C', '#E8D9A8', '#8E7A3A'],sw:['#12161F', '#0A0D13', '#D4AF37']},blueprint:{n:'工程藍圖',e:'Blueprint',acc:'#FFD23F',dark:1,pal:['#EAF2FF', '#8FC1FF', '#FF8A65'],sw:['#1D4F91', '#173F75', '#EAF2FF']},chalk:{n:'黑板粉筆',e:'Chalkboard',acc:'#F5D46B',dark:1,pal:['#F1F1E6', '#8FD3F5', '#F59AB0'],sw:['#25382F', '#1B2A23', '#F1F1E6']},neon:{n:'霓虹燈管',e:'Neon Tubes',acc:'#FF3FA4',dark:1,pal:['#5CF2FF', '#B6FF3F', '#FFD23F'],sw:['#0C0A14', '#130F20', '#5CF2FF']},crt:{n:'CRT 字元終端',e:'CRT ASCII Terminal',acc:'#FFB000',dark:1,pal:['#3DFF7A', '#2BC4FF', '#9DFFB8'],sw:['#050A06', '#08140B', '#3DFF7A']},silent:{n:'1920s 默片',e:'1920s Silent Film',acc:'#C9B27C',dark:1,pal:['#E8E1D0', '#8E8673', '#5E574A'],sw:['#1A1714', '#0E0C0A', '#E8E1D0']},watercolor:{n:'水彩筆刷',e:'Watercolor Brush',acc:'#E8743B',dark:0,pal:['#6EA0CD', '#6EBE96', '#C68FCB'],sw:['#FBF8F2', '#BCD3E6', '#2F5E8C']}};
 
-const LAYOUTS=['street','coral'];
+const LAYOUTS=['street','coral','inkgold'];
+const layoutOf=v=>LAYOUTS.includes(v)?v:'street';
 function setTheme(k){if(!THEMES[k])return;S.theme=k;S.themeSet=1;S.accentSet=0;if(LAYOUTS.includes(k))S.layout=k;S.accent=THEMES[k].acc;saveS();apply();themeMenu();
   if(typeof renderAllCharts==='function')renderAllCharts();if(typeof thumbsLater==='function')thumbsLater();
   toast(LAYOUTS.includes(k)?'已換成「'+THEMES[k].n+'」':'已套用「'+THEMES[k].n+'」風格（版型不變）；主色調可以在右側「格式」再調整',3500)}
-function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const lay=S.layout==='coral'?'coral':'street',cur=THEMES[S.theme]?S.theme:lay;
+function themeMenu(){const box=document.getElementById('themeBox');if(!box)return;const lay=layoutOf(S.layout),cur=THEMES[S.theme]?S.theme:lay;
   const btn=([k,t],on)=>`<button data-th="${k}" class="${on?'on':''}"><i class="thsw" style="background:${t.sw[0]}"><b style="background:${t.sw[1]}"><u style="background:${t.sw[2]}"></u><u style="background:${t.sw[2]}"></u></b><em style="background:${t.acc}"></em></i><span>${t.n}<small>${t.e}</small></span></button>`;
   const E=Object.entries(THEMES);
   box.innerHTML='<div class="thh">版型<small>決定頁面構圖；換版型會回到它原本的配色</small></div><div class="thl">'+E.filter(([k])=>LAYOUTS.includes(k)).map(e=>btn(e,e[0]===lay)).join('')+'</div>'
@@ -946,7 +1003,7 @@ setEditable(!PLAYER);
 
 const hexRgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`};
 function apply(){
-  const b=document.body,rs=document.documentElement.style;document.documentElement.dataset.theme=THEMES[S.theme]?S.theme:'street';document.documentElement.dataset.layout=S.layout==='coral'?'coral':'street';
+  const b=document.body,rs=document.documentElement.style;document.documentElement.dataset.theme=THEMES[S.theme]?S.theme:'street';document.documentElement.dataset.layout=layoutOf(S.layout);
   b.dataset.hl=S.hl;b.dataset.anim=S.anim;b.dataset.leaf=S.leaf;stage.dataset.trans=S.trans;
   rs.setProperty('--accent',S.accent);rs.setProperty('--accent-soft',hexRgba(S.accent,.16));rs.setProperty('--accent-soft2',hexRgba(S.accent,.42));
   rs.setProperty('--spd',S.spd);rs.setProperty('--wc',S.wc);
