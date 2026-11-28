@@ -22,6 +22,7 @@ Claude Code skill「sheet-deck」的原始碼：製作有演示控制台的網�
 - AI 請求檢查（改過 PDF 摘要／AI 相關程式後必跑）：
   - 靜態檢查（快）：`python3 scripts/check_ai_calls.py assets/template.html`
   - 實測（headless Chrome 假造兩次 503，確認會重試）：`python3 scripts/check_ai_calls.py --run assets/template.html`
+- 插圖與版型檢查：`python3 scripts/check_deco.py assets/template.html`（程式能不能解析、不准用 `url(#id)` 漸層、class 已設線寬的元素不准再寫 `stroke-width="…"` 屬性、`.hd h2`／`.hd p` 不准直接設 animation、`data-settings` 指定版型時要有 `v`）。改版型或插圖後必跑，commit 前也會自動跑。
 - 存檔鍵名一律來自 `<html data-deck>`（每份簡報唯一，範本保持 `__DECK_ID__`），不能用網址路徑：`python3 scripts/check_deck.py <簡報.html 或資料夾…>` 把關，多個檔案一起給時也檢查 id 重複。
 - 預覽：`python3 -m http.server 8799 --bind 127.0.0.1 --directory assets` 後開 `http://localhost:8799/template.html`（`~/Desktop/anime/.claude/launch.json` 有名為 `template` 的同一個設定）。Google 文件來源只有從 `http://localhost` 開才讀得到，`file://` 不行。
 - 3D 模型：`python3 scripts/glb2js.py 3d/<名稱>.glb`；壓縮用 Blender 背景執行 `scripts/optimize_model.py`（參數見檔頭說明）。

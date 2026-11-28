@@ -3,6 +3,7 @@
 #   check_deck.py     每份簡報有自己的 data-deck（存檔鍵名），不能用網址
 #   check_ai_calls.py AI 請求經過 httpJSON()（遇到 5xx 會重試）
 #   test_migrate.py   舊存檔轉換集中在 MIGRATIONS，用舊存檔範例實測（需要 Node.js）
+#   check_deco.py     插圖踩過的坑：程式語法、url(#id) 漸層、被 class 蓋掉的線寬、標題動畫、data-settings 少了 v
 # 檢查的是「這次要 commit 的版本」（暫存區），不是工作目錄裡還沒 add 的改動。
 # 安裝（每台電腦一次）：ln -sf ../../scripts/pre-commit .git/hooks/pre-commit
 set -u
@@ -34,6 +35,7 @@ rel=("${files[@]#$tmp/}")
 fail=0
 python3 "$root/scripts/check_deck.py" "${rel[@]}" || fail=1
 python3 "$root/scripts/check_ai_calls.py" "${rel[@]}" || fail=1
+python3 "$root/scripts/check_deco.py" "${rel[@]}" || fail=1
 python3 "$root/scripts/test_migrate.py" "${rel[@]}" || fail=1
 if [ $fail -ne 0 ]; then
   echo
