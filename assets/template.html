@@ -90,6 +90,8 @@ html[data-mode=player] #stage{border-radius:0;box-shadow:none}
 .tb svg{width:22px;height:22px;flex:none}.tb:hover{background:#f1efea}.tb:active{transform:scale(.96)}
 .tb.ib{min-width:40px;height:40px}.tb.ib.on{color:var(--ui)}
 #bPlay svg{color:var(--ui)}
+#sNotes{width:100%;box-sizing:border-box;border:1px solid var(--ui-line);border-radius:10px;padding:10px 12px;font:14px/1.6 inherit;color:#333;resize:vertical;outline:none}
+#sNotes:focus{border-color:var(--ui);box-shadow:0 0 0 3px rgba(31,157,99,.15)}
 .tb.busy{pointer-events:none;opacity:.6}.tb.busy svg{animation:spin 1.2s linear infinite}
 .sep{width:1px;height:30px;background:var(--ui-line);margin:0 6px;flex:none}
 .livebtn .ic{display:block;width:22px;height:22px}.livebtn .dl{display:flex;align-items:center;gap:5px}
@@ -1020,6 +1022,7 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
   <div class="bl"><button class="tb ib" id="bSide" title="顯示／隱藏頁面目錄"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M9 4.5v15"/></svg></button><span class="ttl">演示控制台</span><span class="pg" id="pgc">1/1 頁</span></div>
   <div class="bc">
     <button class="tb" id="bPlay" title="從目前頁開始播放（Esc 離開）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"/></svg><span>播放</span></button>
+    <button class="tb" id="bPres" title="講者模式：另開一個視窗，顯示備忘稿、下一頁和計時器（快捷鍵 P）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16v4M7 8h6M7 11.5h4"/></svg><span>講者</span></button>
     <span class="sep"></span>
     <button class="tb" id="bAddPg" title="在目前頁之後新增一頁（⌘/Ctrl+Enter）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M12 9v6M9 12h6"/></svg><span>新增頁</span></button>
     <button class="tb" id="bText" title="新增文字框"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6.5h14M12 6.5V19M9 19h6"/></svg><span>文字</span></button>
@@ -1108,6 +1111,8 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
   <div class="grp" id="pageSrc" style="display:none"><label class="h" style="color:var(--ui);font-weight:700">📄 本頁資料來源</label>
     <select></select><div id="pageCols" style="display:none"><label class="h" style="margin-top:14px">名稱欄（排行裡的項目）</label><select id="pcL"></select><label class="h" style="margin-top:12px">數值欄（要比較的數字）</label><select id="pcV"></select></div><div class="segc" id="docMode" style="display:none;margin-top:10px"><button data-v="sum">摘要</button><button data-v="full">全文</button></div><div class="tip ps-info" style="margin-top:8px"></div></div>
   <div id="slideFmt">
+  <div class="grp"><label class="h">講者備忘稿 <small id="noteNo" style="font-weight:400;color:#999"></small></label>
+    <textarea id="sNotes" rows="5"></textarea></div>
   <div class="grp"><label class="h">高亮樣式</label>
     <div class="seg" data-k="hl"><button data-v="glass">玻璃</button><button data-v="capsule">膠囊</button><button data-v="underline">下劃線</button><button data-v="text">文字</button></div></div>
   <div class="grp"><label class="h">主色調</label>
@@ -1814,6 +1819,7 @@ function go(n,dir,replay){
   if(chartsInit){if(prev!==slides[cur])selectChart(null);playCharts(cur,(book?1250:350)*S.spd)}
   const t=String(cur+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
   const pb=document.getElementById('prog');if(pb)pb.style.width=((cur+1)/slides.length*100)+'%';
+  syncNotes();presUpdate();
   if(PLAYER)return;
   document.getElementById('pNum').textContent=t;document.getElementById('pgc').textContent=(cur+1)+'/'+slides.length+' 頁';
   thumbs.querySelectorAll('.thumb').forEach((x,i)=>x.classList.toggle('on',i===cur));
@@ -1829,6 +1835,7 @@ addEventListener('keydown',e=>{
   else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(cur-1,-1)}
   else if(e.key==='Home')go(0,-1);else if(e.key==='End')go(slides.length-1,1);
   else if(e.key==='Escape'&&document.body.classList.contains('present'))stopPlay();
+  else if((e.key==='p'||e.key==='P')&&!e.metaKey&&!e.ctrlKey&&!e.altKey)openPresenter();
   else if(PLAYER&&(e.key==='f'||e.key==='F')){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}
 });
 
@@ -1844,6 +1851,74 @@ function stopPlay(){body.classList.remove('present');setEditable(true);if(docume
 if(!PLAYER)document.getElementById('bPlay').onclick=play;
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&body.classList.contains('present'))stopPlay()});
 view.addEventListener('click',e=>{if(!PLAYER&&!body.classList.contains('present'))return;if(e.target.closest('.showcv'))return;go(e.clientX<innerWidth*.25?cur-1:cur+1,e.clientX<innerWidth*.25?-1:1)});
+/* ---------------- 講者備忘稿與講者模式 ----------------
+   備忘稿存在 S.notes[頁 id]（純文字，跟著 S 存檔、匯出 HTML；匯出 PPTX 時放進每頁的備忘稿）。
+   講者模式（工具列「講者」或按 P）另開一個同網域的視窗：目前頁、下一頁（靜態複本）、備忘稿、計時器。
+   兩邊都能換頁：go() 每次換頁都會呼叫 presUpdate()；講者視窗的按鈕和方向鍵直接呼叫這裡的 go()。 */
+var PW=null;
+const noteOf=i=>{const s=slides[i];return s&&(S.notes||{})[s.dataset.sid]||''};
+function setNote(i,v){const s=slides[i];if(!s||PLAYER)return;S.notes=S.notes||{};if(v.trim())S.notes[s.dataset.sid]=v;else delete S.notes[s.dataset.sid];saveS()}
+function syncNotes(){const ta=document.getElementById('sNotes');if(!ta)return;if(document.activeElement!==ta)ta.value=noteOf(cur);const n=document.getElementById('noteNo');if(n)n.textContent='第 '+(cur+1)+' 頁'}
+if(!PLAYER){const ta=document.getElementById('sNotes');ta.addEventListener('input',()=>{setNote(cur,ta.value);presUpdate(true)})}
+/* 講者視窗裡的頁面複本：圖表是 canvas，複製不到內容，換成當下畫面的圖片 */
+function presClone(i){const s=slides[i];if(!s)return '';const c=pageClone(s),src=[...s.querySelectorAll('canvas')];
+  [...c.querySelectorAll('canvas')].forEach((d,k)=>{const o=src[k];if(!o)return;try{const im=document.createElement('img');im.src=o.toDataURL();im.style.cssText=d.style.cssText;im.style.width=o.clientWidth+'px';im.style.height=o.clientHeight+'px';d.replaceWith(im)}catch(e){}});
+  return c.outerHTML}
+const PRES_CSS=`html,body.pres{background:#15171c}
+body.pres{margin:0;color:#ECEAE4;font-family:'Noto Sans TC','PingFang TC',sans-serif;height:100vh;overflow:hidden;display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:auto minmax(0,1fr);gap:14px 18px;padding:16px 18px;box-sizing:border-box}
+#ph{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#ph .tm{font:700 40px/1 'SF Mono',Menlo,Consolas,monospace;letter-spacing:1px;min-width:150px}
+#ph .clk{font:500 18px 'SF Mono',Menlo,monospace;opacity:.55;margin-right:auto}
+#ph .no{font:700 22px 'SF Mono',Menlo,monospace;min-width:96px;text-align:center}
+#ph button{border:1px solid #343944;background:#20242c;color:#ECEAE4;border-radius:10px;padding:9px 16px;font:600 15px 'Noto Sans TC',sans-serif;cursor:pointer}
+#ph button:hover{background:#2b303a}#ph button.pri{background:#1f9d63;border-color:#1f9d63}
+.col{display:flex;flex-direction:column;gap:8px;min-height:0}
+.lab{font-size:13px;letter-spacing:3px;opacity:.55}
+.pv{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000;box-shadow:0 0 0 1px #2c3038;flex:none}
+.pv.cur{box-shadow:0 0 0 3px #1f9d63}
+.pvin{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden}
+.pvin .end{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:90px;color:#8a8f99;background:#1b1e24}
+#prNotes{flex:1;min-height:0;background:#0f1115;color:#F3F1EC;border:1px solid #2c3038;border-radius:10px;padding:16px 18px;font:26px/1.6 'Noto Sans TC','PingFang TC',sans-serif;resize:none;outline:none}
+#prNotes:focus{border-color:#1f9d63}
+#prNotes[readonly]{opacity:.9}`;
+function presFit(){if(!PW||PW.closed)return;PW.document.querySelectorAll('.pv').forEach(pv=>{const k=pv.clientWidth/1920;const i=pv.querySelector('.pvin');if(i)i.style.transform='scale('+k+')'})}
+function presUpdate(notesOnly){if(!PW||PW.closed)return;const d=PW.document,ta=d.getElementById('prNotes');if(!ta)return;
+  d.getElementById('prNo').textContent=(cur+1)+' / '+slides.length;
+  if(d.activeElement!==ta)ta.value=noteOf(cur);ta.placeholder=PLAYER?'這一頁沒有備忘稿':'這一頁還沒有備忘稿，直接在這裡打字就會存起來';
+  if(notesOnly)return;
+  const h=document.documentElement,ph=d.documentElement;ph.dataset.theme=h.dataset.theme;ph.dataset.layout=h.dataset.layout;ph.setAttribute('style',h.getAttribute('style')||'');
+  ['hl','leaf'].forEach(k=>d.body.dataset[k]=document.body.dataset[k]);d.body.dataset.anim='off';
+  d.getElementById('prCur').innerHTML=presClone(cur);
+  d.getElementById('prNext').innerHTML=cur+1<slides.length?presClone(cur+1):'<div class="end">最後一頁</div>';presFit()}
+function openPresenter(){
+  if(PW&&!PW.closed){PW.focus();presUpdate();return}
+  PW=window.open('','sd-presenter-'+DECK_ID,'width=1280,height=780');
+  if(!PW){toast('瀏覽器擋住了彈出視窗：請允許這個網頁開新視窗，再按一次「講者」',6000);return}
+  const d=PW.document,css=[...document.querySelectorAll('link[rel=stylesheet],style')].map(e=>e.outerHTML).join('');
+  d.open();d.write(`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>講者模式</title>${css}<style>${PRES_CSS}</style></head><body class="pres">
+<div id="ph"><span class="tm" id="prTm">00:00</span><button id="prPause">暫停</button><button id="prReset">歸零</button><span class="clk" id="prClk"></span>
+<button id="prPrev">‹ 上一頁</button><span class="no" id="prNo"></span><button id="prNextB">下一頁 ›</button><button class="pri" id="prPlay">在主視窗播放</button></div>
+<div class="col"><div class="lab">目前這一頁</div><div class="pv cur"><div class="pvin" id="prCur"></div></div></div>
+<div class="col"><div class="lab">下一頁</div><div class="pv"><div class="pvin" id="prNext"></div></div><div class="lab" style="margin-top:6px">講者備忘稿</div><textarea id="prNotes"></textarea></div>
+</body></html>`);d.close();
+  /* 計時器：從打開講者視窗開始算，可以暫停、歸零；右邊是現在時間 */
+  let t0=Date.now(),acc=0,run=true;const pad=n=>String(n).padStart(2,'0');
+  const tick=()=>{if(!PW||PW.closed)return;const ms=acc+(run?Date.now()-t0:0),s=Math.floor(ms/1000),h=Math.floor(s/3600);
+    d.getElementById('prTm').textContent=(h?h+':':'')+pad(Math.floor(s/60)%60)+':'+pad(s%60);const n=new Date();d.getElementById('prClk').textContent='現在 '+pad(n.getHours())+':'+pad(n.getMinutes())};
+  PW.setInterval(tick,500);tick();
+  d.getElementById('prPause').onclick=e=>{if(run){acc+=Date.now()-t0;run=false;e.target.textContent='繼續'}else{t0=Date.now();run=true;e.target.textContent='暫停'}tick()};
+  d.getElementById('prReset').onclick=()=>{acc=0;t0=Date.now();tick()};
+  d.getElementById('prPrev').onclick=()=>go(cur-1,-1);d.getElementById('prNextB').onclick=()=>go(cur+1,1);
+  d.getElementById('prPlay').onclick=()=>{window.focus();if(!body.classList.contains('present'))play()};
+  const ta=d.getElementById('prNotes');ta.readOnly=PLAYER;ta.addEventListener('input',()=>{setNote(cur,ta.value);syncNotes()});
+  PW.addEventListener('keydown',e=>{if(d.activeElement===ta)return;
+    if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1,1)}
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(cur-1,-1)}
+    else if(e.key==='Home')go(0,-1);else if(e.key==='End')go(slides.length-1,1)});
+  PW.addEventListener('resize',presFit);
+  presUpdate();PW.setTimeout(presFit,300);
+}
+if(!PLAYER)document.getElementById('bPres').onclick=openPresenter;
 
 let sx=null;view.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
 view.addEventListener('touchend',e=>{if(sx==null||(!PLAYER&&!body.classList.contains('present')))return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(dx<0?cur+1:cur-1,dx<0?1:-1);sx=null});
@@ -1933,6 +2008,7 @@ async function buildPptx(){
       const cv=await snapEl(c,1.5);
       const sl=pptx.addSlide();sl.addImage({data:cv.toDataURL('image/jpeg',.92),x:0,y:0,w:13.333,h:7.5});
       texts.forEach(t=>sl.addText(t.text,t.o));
+      {const nt=(S.notes||{})[slides[si].dataset.sid];if(nt)sl.addNotes(nt)}
       (S.charts||[]).filter(ch=>ch.sid===slides[si].dataset.sid).forEach(ch=>addNativeChart(pptx,sl,ch));
     }
   }finally{host.remove()}

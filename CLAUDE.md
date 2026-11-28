@@ -35,8 +35,9 @@ Claude Code skill「sheet-deck」的原始碼：製作有演示控制台的網�
 1. **裝飾產生器**：`makeDeco(type,sid)` 產生每頁的 SVG，只畫目前版型（`S.layout`）的那一套插圖：珊瑚 `.g-coral`、街景 `streetDeco()`、墨金 `inkDeco()`、賽博終端機 `cyDeco()`、深色知識圖譜 `grDeco()`、鈷藍格線 `cbDeco()`、復古小誌 `znDeco()`、8-bit 軌道 `obDeco()`、數位金融瑞士風 `ftDeco()`、田野筆記報告風 `fdDeco()`、復古 Windows `wnDeco()`；`<svg data-lay>` 記著畫的是哪個版型，`apply()` 換版型時重畫。`type` 是 `cover` 或 `content`；`sid` 當亂數種子，同一頁每次畫出來一樣。插圖全部用 SVG 程式畫，**不嵌外部圖片**。
 2. **狀態**：`DEF` 是預設值，`S` 是目前設定（存 `localStorage[KEY+':set']`），`EDITS` 是使用者改過的文字（存 `KEY+':ed'`），`KEY='sheet-deck:'+location.pathname`。AI 金鑰另存 `sheet-deck:key:<provider>`，不放進 `S`，所以不會被匯出。
 3. **頁面管理**：`TPL` 存原始頁面；新增頁記在 `S.added[sid]={from}`，由 `makeSlide()` 重建（`from` 可為 `blank`、`live:srcN`、`doc:srcN`、`pdf:id` 或既有頁的 sid）；`prepSlide()` 填裝飾並套用 `EDITS`；`applyOrder()` 依 `S.order` 排序。
-4. **`apply()`**：把 `S` 套到畫面（版型、風格、主色、動畫開關 `body[data-anim]`、小圖案開關 `body[data-leaf]`）。
-5. 其後是資料來源（試算表 JSONP、Google 文件）、ECharts 圖表、three.js 3D、PDF 摘要（`httpJSON()` 包 `httpJSONOnce()`）、3D 空間模式、匯出。
+4. **講者模式**：`openPresenter()` 用 `window.open` 開同網域視窗、`document.write` 寫入目前的 `<style>`；`go()` 每次換頁呼叫 `syncNotes()`、`presUpdate()`，講者視窗的按鈕直接呼叫主視窗的 `go()`。備忘稿在 `S.notes`。
+5. **`apply()`**：把 `S` 套到畫面（版型、風格、主色、動畫開關 `body[data-anim]`、小圖案開關 `body[data-leaf]`）。
+6. 其後是資料來源（試算表 JSONP、Google 文件）、ECharts 圖表、three.js 3D、PDF 摘要（`httpJSON()` 包 `httpJSONOnce()`）、3D 空間模式、匯出。
 
 改程式時要留意：
 - **存檔格式**：`S`、`EDITS` 的格式改了，就在 `MIGRATIONS` 最後加一步（不改舊步驟、不在別處寫轉換），並在 `scripts/test_migrate.py` 加一個舊存檔範例；由 `test_migrate.py`（commit 前自動跑）把關。
