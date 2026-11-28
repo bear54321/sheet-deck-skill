@@ -328,6 +328,10 @@ body[data-hl=text] mark{color:var(--accent);font-weight:700}
 .docpg .hd>div:last-child{min-width:0;flex:1}
 .docpg .dt{color:#3b3b3b;font-size:48px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .docbox{left:200px;right:200px;top:330px;bottom:120px;padding:44px 56px}
+/* AI 插圖頁 */
+.imgbox{left:200px;right:200px;top:280px;bottom:120px;margin:0;padding:0!important;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.imgbox img{width:100%;height:100%;object-fit:cover;display:block}
+.imgbox img:not([src]){visibility:hidden}
 .docbody{height:100%;overflow:hidden;column-gap:64px;column-fill:auto}
 .docbody p{margin:0 0 .75em;line-height:1.75;color:#555}
 .docsum{list-style:none;margin:0;padding:0}
@@ -1028,6 +1032,7 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
     <button class="tb" id="bText" title="新增文字框"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6.5h14M12 6.5V19M9 19h6"/></svg><span>文字</span></button>
     <button class="tb" id="bChart" title="插入圖表（資料來自試算表）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="7" rx=".8"/><rect x="10.5" y="7" width="3" height="11" rx=".8"/><rect x="15.5" y="13" width="3" height="5" rx=".8"/></svg><span>圖表</span></button>
     <button class="tb" id="bPdf" title="選一個 PDF，由 AI（Claude／Gemini／ChatGPT）讀完後新增一頁摘要"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3.5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z"/><path d="M14 3.5v5h5"/><path d="M12 11.5l.9 2 2 .9-2 .9-.9 2-.9-2-2-.9 2-.9z" fill="currentColor"/></svg><span>PDF 摘要</span></button>
+    <button class="tb" id="bImg" title="用 AI（Gemini 或 ChatGPT）依你的描述畫一張插圖，新增一頁插圖頁"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/><path d="M18 2.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" fill="currentColor"/></svg><span>AI 插圖</span></button>
     <div class="dd" id="dd3"><button class="tb" id="b3d" title="加入 3D 角色或 360° 展示"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12L4 7.5M12 12v9"/></svg><span>3D 角色</span></button><div class="menu" id="flyAddBox"><button id="fbxImport">📦 匯入 3D 模型…<small>GLB 或 FBX</small></button><div id="fbxList"></div></div></div>
     <div class="dd" id="ddTh"><button class="tb" id="bTheme" title="切換整份簡報的風格（16 種）"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.2-1-1.6-1-2.6 0-.9.7-1.6 1.7-1.6H17a3.5 3.5 0 0 0 3.5-3.6C20.5 7 16.7 3.5 12 3.5z"/><circle cx="7.6" cy="11.2" r="1.1" fill="currentColor"/><circle cx="10.4" cy="7.4" r="1.1" fill="currentColor"/><circle cx="15" cy="7.6" r="1.1" fill="currentColor"/></svg><span>風格</span></button><div class="menu" id="themeBox"></div></div>
     <span class="sep"></span>
@@ -1142,6 +1147,8 @@ body.flyhover #stage{cursor:grab}body.flydrag #stage,body.flydrag #stage *{curso
   <div class="grp"><label class="h">資料來源（試算表／文件）</label>
     <div id="srcList"></div>
     <button class="btn" id="srcAdd" style="width:100%;justify-content:center;margin-top:10px">➕ 新增資料來源</button>
+    <button class="btn" id="srcFile" style="width:100%;justify-content:center;margin-top:8px">📁 匯入 CSV／Excel 檔</button>
+    <div class="tip" style="margin-top:6px">也可以把檔案直接拖進視窗。檔案的資料會存在簡報裡，不會自動更新；要更新就按那一列的 🔗 重新選檔。</div>
     <label class="h" style="margin-top:18px">自動更新（每 30 秒）</label>
     <div class="seg" data-k="auto"><button data-v="on">開啟</button><button data-v="off">關閉</button></div></div>
   <div class="grp" id="aiGrp"><label class="h">AI 摘要（API 金鑰）</label>
@@ -1176,10 +1183,10 @@ function snapEl(el,scale){return html2canvas(el,{width:1920,height:1080,windowWi
 const IDB={};
 async function idbOp(db,store,op,k,v){try{IDB[db]=IDB[db]||await new Promise((ok,no)=>{const q=indexedDB.open(db,1);q.onupgradeneeded=()=>q.result.createObjectStore(store);q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)});
   return await new Promise(ok=>{const st=IDB[db].transaction(store,op==='get'?'readonly':'readwrite').objectStore(store),q=op==='put'?st.put(v,k):op==='del'?st.delete(k):st.get(k);q.onsuccess=()=>ok(q.result||null);q.onerror=()=>ok(null)})}catch(e){return null}}
-/* 新增頁的來源（存在 S.added[sid].from）：'live:srcN' 資料頁、'pdf:id' PDF 摘要頁、'doc:srcN' 文件頁，或 'blank'／既有頁的 sid。
+/* 新增頁的來源（存在 S.added[sid].from）：'live:srcN' 資料頁、'pdf:id' PDF 摘要頁、'doc:srcN' 文件頁、'img:id' AI 插圖頁，或 'blank'／既有頁的 sid。
    這個字串格式會存進使用者的存檔，不能改；組字串用 pageFrom()、拆字串用 parseFrom()。由 scripts/check_deck.py 把關 */
 function pageFrom(kind,id){return kind+':'+id}
-function parseFrom(from){const m=/^(live|pdf|doc):([\s\S]*)$/.exec(String(from));return m?{kind:m[1],id:m[2]}:null}
+function parseFrom(from){const m=/^(live|pdf|doc|img):([\s\S]*)$/.exec(String(from));return m?{kind:m[1],id:m[2]}:null}
 /* ---------------- deco generator ---------------- */
 function R(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const f=n=>n.toFixed(1);
@@ -1673,7 +1680,7 @@ function streetDeco(type,sid){const r=R(sid*131+7),o=[],big=type==='cover';
   }
   return o.join('')}
 const BLANK='<section class="slide" data-deco="content"><div class="deco"></div><div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>新的頁面</h2><p class="a l" style="--d:.25s" data-ed>點這裡輸入副標題</p></div></div></section>';
-function makeSlide(sid,from){let el;const pf=parseFrom(from),PG={live:id=>livePgHTML(id,(S.added[sid]||{}).t),pdf:pdfPgHTML,doc:docPgHTML};if(pf){const w=document.createElement('div');w.innerHTML=PG[pf.kind](pf.id);el=w.firstElementChild}else if(from==='blank'||!TPL[from]){const w=document.createElement('div');w.innerHTML=BLANK;el=w.firstElementChild}else el=TPL[from].cloneNode(true);
+function makeSlide(sid,from){let el;const pf=parseFrom(from),PG={live:id=>livePgHTML(id,(S.added[sid]||{}).t),pdf:pdfPgHTML,doc:docPgHTML,img:imgPgHTML};if(pf){const w=document.createElement('div');w.innerHTML=PG[pf.kind](pf.id);el=w.firstElementChild}else if(from==='blank'||!TPL[from]){const w=document.createElement('div');w.innerHTML=BLANK;el=w.firstElementChild}else el=TPL[from].cloneNode(true);
   el.dataset.sid=sid;el.classList.remove('active','leaving','hold','flipped','clipL','clipR');el.querySelectorAll('.chartbox').forEach(b=>b.remove());
   el.querySelectorAll('[data-id]').forEach(e=>e.removeAttribute('data-id'));const d=el.querySelector('.deco');if(d)d.innerHTML='';return el}
 const allSlides=()=>[...stage.querySelectorAll(':scope > .slide'),...holder.querySelectorAll(':scope > .slide')];
@@ -1956,6 +1963,9 @@ function cleanRoot(){
   root.dataset.settings=JSON.stringify(S);
   root.dataset.cache=JSON.stringify(CACHE);
   root.dataset.edits=JSON.stringify(EDITS);
+  /* AI 插圖：圖片只烘一份在 data-imgs，頁面裡的 <img> 不帶圖片資料，開啟時由 loadImgs() 補上 */
+  root.querySelectorAll('.imgbox img').forEach(i=>i.removeAttribute('src'));
+  {const ids=[...new Set([...root.querySelectorAll('.slide[data-img]')].map(x=>x.dataset.img))].filter(id=>IMGMEM[id]);if(ids.length){const o={};ids.forEach(id=>o[id]=IMGMEM[id]);root.dataset.imgs=JSON.stringify(o)}else root.removeAttribute('data-imgs')}
   {const used=Object.entries(S.models3d||{}).flatMap(([id,m])=>[id,...(m.extra||[]).map(x=>x.key)]).filter(id=>FBXMEM[id]);if(used.length){const o={};used.forEach(id=>o[id]=b64of(FBXMEM[id]));root.dataset.fbx=JSON.stringify(o)}else root.removeAttribute('data-fbx')}
   return root;
 }
@@ -2085,7 +2095,7 @@ function renderSlide(sl,t){
     return `<circle class="dseg" cx="100" cy="100" r="80" pathLength="100" stroke="${d.c}" style="--len:${len.toFixed(2)};--off:${o.toFixed(2)}"/>`}).join('');
   const ctr=sl.querySelector('.dctr');ctr.querySelector('b').textContent=nf(sum);ctr.querySelector('span').textContent=vL+'總計';
   sl.querySelector('.dleg').innerHTML=rows.slice(0,8).map(d=>`<div class="lg"><i style="background:${d.c}"></i><span class="lt" data-tx>${escH(d.k)}</span><span class="lp" data-tx>${sum?Math.round(d.v/sum*1000)/10:0}%</span></div>`).join('');
-  sl.querySelector('.srcline').textContent=`資料來源：Google 試算表（${kL}／${vL}）・更新於 ${t._at||''}`;
+  sl.querySelector('.srcline').textContent=`資料來源：${t._file?'檔案「'+t._file+'」':'Google 試算表'}（${kL}／${vL}）・${t._file?'匯入於':'更新於'} ${t._at||''}`;
   sl.querySelectorAll('.num').forEach(e=>e.dataset.fin=e.textContent);
 }
 const liveSlides=()=>allSlides().filter(s=>s.dataset.src);
@@ -2095,7 +2105,7 @@ async function refreshData(silent){
   let ok=0,err=null,changed=[];
   const chS=new Set();
   await Promise.all(srcKeys().map(async k=>{
-    try{const isD=isDocKey(k),t=isD?await fetchDoc(srcUrl(k)):await fetchSheet(srcUrl(k));srcStat[k]='ok';delete srcErr[k];t._at=new Date().toLocaleString('zh-TW',{hour12:false});const g=isD?t.text:JSON.stringify([t.cols,t.rows]);ok++;
+    try{const isD=isDocKey(k),isF=isFileKey(k),t=isF?fileTable(k):isD?await fetchDoc(srcUrl(k)):await fetchSheet(srcUrl(k));srcStat[k]='ok';delete srcErr[k];if(!isF)t._at=new Date().toLocaleString('zh-TW',{hour12:false});const g=isD?t.text:JSON.stringify([t.cols,t.rows]);ok++;
       if(sig[k]!==g&&isD){sig[k]=g;CACHE[k]=t;docSlides().filter(sl=>docKeyOf(sl)===k).forEach(sl=>{renderDoc(sl,t);changed.push(sl)})}
       else if(sig[k]!==g){sig[k]=g;CACHE[k]=t;liveSlides().filter(sl=>pageSrcKey(sl)===k).forEach(sl=>{renderSlide(sl,t);changed.push(sl)});(S.charts||[]).filter(c=>c.src===k).forEach(c=>chS.add(c.sid))}}
     catch(e){err=e;srcStat[k]='err';srcErr[k]=e.message}}));
@@ -2404,9 +2414,70 @@ function renderSrcPanel(){if(PLAYER)return;const box=document.getElementById('sr
     return `<div class="srow" data-k="${k}"><i class="sdot ${st||''}" title="${st==='ok'?'已連線':st==='err'?'讀取失敗':'尚未讀取'}"></i>
       <input class="sname" value="${escH(srcName(k))}" title="點這裡改名">
       ${'<button class="sbtn sadd" data-a="page" title="'+(isDocKey(k)?'在目前這頁後面新增一頁，顯示這份文件':'在目前這頁後面新增一頁資料頁（重點數字、排行、圓環圖）')+'">＋</button>'}<button class="sbtn" data-a="open" title="在新分頁開啟">↗</button><button class="sbtn" data-a="url" title="更換連結">🔗</button><button class="sbtn" data-a="del" title="移除">🗑</button>
-      <div class="suse">${isDocKey(k)?'📄 文件・':''}${u.pages?u.pages+' 頁':''}${u.pages&&u.charts?'・':''}${u.charts?u.charts+' 張圖表':''}${!u.pages&&!u.charts?'未使用':''}</div></div>`}).join('')||'<div class="tip">還沒有資料來源</div>'}
+      <div class="suse">${isDocKey(k)?'📄 文件・':isFileKey(k)?'📁 檔案・':''}${u.pages?u.pages+' 頁':''}${u.pages&&u.charts?'・':''}${u.charts?u.charts+' 張圖表':''}${!u.pages&&!u.charts?'未使用':''}</div></div>`}).join('')||'<div class="tip">還沒有資料來源</div>'}
 function setSrcUrl(k,u){if(S.srcs&&S.srcs[k])S.srcs[k].url=u;else S[k]=u}
 function removeSrc(k){if(S.srcs&&S.srcs[k])delete S.srcs[k];else S[k]='';if(S.srcName)delete S.srcName[k];delete CACHE[k];delete sig[k]}
+/* ---------------- 本機檔案資料來源（CSV／TSV／Excel） ----------------
+   S.srcs[k]={name,url:'file:檔名',file:1,fname,at,data:{h:[欄名],r:[[值…]…]}}：資料整份存在設定裡（跟著存檔、匯出），不會自動更新；要更新就按 🔗 重新選檔。
+   fileTable() 把它轉成跟 Google 試算表一樣的 {cols,rows}，所以資料頁、圖表都不用改。CSV 先試 UTF-8，不是的話用 Big5（台灣 Excel 存的 CSV 常是 Big5）。 */
+const XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',FILE_MAX_ROWS=5000,FILE_EXT=/\.(csv|tsv|txt|xlsx|xls)$/i;
+const isFileKey=k=>/^file:/.test(srcUrl(k));
+const toNum=v=>{if(typeof v==='number')return isFinite(v)?v:null;const s=String(v??'').trim().replace(/^(NT\$|\$|＄)/,'').replace(/[,\s，]/g,'').replace(/(元|%|％)$/,'');return s!==''&&/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(s)?parseFloat(s):null};
+function fileTable(k){const m=(S.srcs&&S.srcs[k])||{},d=m.data||{h:[],r:[]};
+  const cols=d.h.map((h,i)=>{const vals=d.r.map(r=>r[i]).filter(v=>v!==''&&v!=null);return{id:'c'+i,label:String(h),type:vals.length&&vals.every(v=>toNum(v)!=null)?'number':'string'}});
+  const rows=d.r.map(r=>({c:cols.map((c,i)=>{const v=r[i];if(v===''||v==null)return null;return c.type==='number'?{v:toNum(v),f:String(v)}:{v:String(v)}})}));
+  return{cols,rows,_at:m.at||'',_file:m.fname||m.name||''}}
+function parseCSV(tx){tx=tx.replace(/^﻿/,'');const first=tx.split(/\r?\n/)[0]||'',cnt=c=>first.split(c).length,dl=cnt('\t')>cnt(',')?'\t':cnt(';')>cnt(',')?';':',';
+  const out=[];let row=[],f='',q=false;
+  for(let i=0;i<tx.length;i++){const c=tx[i];
+    if(q){if(c==='"'){if(tx[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"'&&f==='')q=true;else if(c===dl){row.push(f);f=''}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&tx[i+1]==='\n')i++;row.push(f);out.push(row);row=[];f=''}else f+=c}
+  if(f!==''||row.length){row.push(f);out.push(row)}
+  return out.filter(r=>r.some(v=>String(v).trim()!==''))}
+async function readTextSmart(file){const buf=await file.arrayBuffer();try{return new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(e){try{return new TextDecoder('big5').decode(buf)}catch(_){return new TextDecoder().decode(buf)}}}
+async function readGrid(file){const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){await loadJS(XLSX_URL);const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true}),grid=n=>XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:''}).filter(r=>r.some(v=>String(v).trim()!==''));
+    /* 只算有資料的工作表（舊 Excel 常附兩張空白的 Sheet2、Sheet3），有兩張以上才問 */
+    const names=wb.SheetNames.filter(n=>grid(n).length);if(!names.length)return{grid:[],sheet:''};let sn=names[0];
+    if(names.length>1){const a=prompt('這個檔案有 '+names.length+' 個有資料的工作表，要用哪一個？（輸入編號）\n'+names.map((n,i)=>(i+1)+'. '+n).join('\n'),'1');if(a==null)return null;
+      sn=names[parseInt(a,10)-1]||(names.includes(a.trim())?a.trim():sn)}
+    return{grid:grid(sn),sheet:names.length>1?sn:''}}
+  return{grid:parseCSV(await readTextSmart(file)),sheet:''}}
+function gridToData(g){const blank=v=>v==null||String(v).trim()==='';
+  g=g.map(r=>r.map(v=>v instanceof Date?v.toLocaleDateString('zh-TW'):v));
+  const w=Math.max(0,...g.map(r=>r.length));
+  /* 欄位名稱列：前 10 列裡第一個「填了一半以上的格子、而且大多是文字」的列。表格上方的大標題、說明列（例如「育才國小 營養午餐…」「評分比例」）會被跳過 */
+  let hi=-1;for(let i=0;i<Math.min(10,g.length-1);i++){const ne=g[i].filter(v=>!blank(v)),tx=ne.filter(v=>toNum(v)==null);if(ne.length>=Math.max(2,Math.ceil(w*.5))&&tx.length>=ne.length*.6){hi=i;break}}
+  let h=hi>=0?g[hi]:[],body=hi>=0?g.slice(hi+1):g;
+  /* 資料列都是空的欄拿掉（舊的 .xls 公式欄常沒存計算結果，讀出來是空的） */
+  const keep=[...Array(w).keys()].filter(i=>body.some(r=>!blank(r[i])));
+  h=keep.map((i,n)=>String(h[i]??'').trim()||(n===0?'項目':'欄 '+(i+1)));
+  const cut=body.length>FILE_MAX_ROWS;
+  body=body.slice(0,FILE_MAX_ROWS).map(r=>keep.map(i=>{const v=r[i];return v==null?'':typeof v==='number'?v:String(v).trim()})).filter(r=>r.filter(v=>v!=='').length>=Math.min(2,keep.length));  // 只有一格有字的列（例如「各項目最高分」這種表尾說明）不算資料
+  return{h,r:body,cut,skipped:w-keep.length}}
+async function importFile(file,k){
+  if(!FILE_EXT.test(file.name)){toast('只能匯入 CSV、TSV 或 Excel（.xlsx／.xls）檔',5000);return null}
+  if(file.size>8*1024*1024){toast('檔案太大（超過 8 MB），請先刪掉用不到的欄位或列',6000);return null}
+  toast('正在讀取「'+file.name+'」…',0);let g;
+  try{g=await readGrid(file)}catch(e){toast('⚠️ 讀不了這個檔案：'+((e&&e.message)||e)+(/\.xlsx?$/i.test(file.name)?'（Excel 需要網路載入讀檔元件）':''),7000);return null}
+  if(!g){toast('已取消',2000);return null}
+  const d=gridToData(g.grid);if(!d.r.length){toast('檔案裡沒有資料列（第一列會當成欄位名稱）',5000);return null}
+  const fresh=!k;S.srcs=S.srcs||{};if(fresh){let n=4;while(S['src'+n]||S.srcs['src'+n])n++;k='src'+n}
+  const name=fresh?(String(prompt('幫這個資料來源取個名字',file.name.replace(/\.[^.]+$/,'')+(g.sheet?'・'+g.sheet:''))||'').trim()||file.name):srcName(k);
+  S.srcs[k]={name,url:'file:'+file.name,file:1,fname:file.name+(g.sheet?'（'+g.sheet+'）':''),at:new Date().toLocaleString('zh-TW',{hour12:false}),data:{h:d.h,r:d.r}};
+  if(!fresh&&S.srcName)S.srcName[k]=name;saveS();delete sig[k];await refreshData(true);renderSrcPanel();
+  toast((fresh?'已加入資料來源：':'已更新：')+name+'（'+d.r.length+' 列、'+d.h.length+' 欄'+(d.cut?'；只保留前 '+FILE_MAX_ROWS+' 列':'')+(d.skipped?'；略過 '+d.skipped+' 個沒有資料的欄（公式欄若檔案沒存計算結果也會是空的）':'')+'）',7000);
+  if(fresh&&confirm('要在目前這頁之後新增一頁資料頁（重點數字、排行、圓環圖）嗎？')){addLiveSlide(k);renderSrcPanel()}
+  return k}
+function pickFile(k){const inp=document.createElement('input');inp.type='file';inp.accept='.csv,.tsv,.txt,.xlsx,.xls,text/csv';inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)importFile(f,k)};inp.click()}
+if(!PLAYER){
+  document.getElementById('srcFile').onclick=()=>pickFile();
+  /* 直接把檔案拖進視窗也能匯入；其他種類的檔案擋下來，免得瀏覽器直接打開它、離開簡報 */
+  addEventListener('dragover',e=>{if([...((e.dataTransfer&&e.dataTransfer.items)||[])].some(i=>i.kind==='file'))e.preventDefault()});
+  addEventListener('drop',e=>{const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(!f)return;e.preventDefault();
+    if(FILE_EXT.test(f.name))importFile(f);else toast('拖進來的檔案只能是 CSV、TSV 或 Excel；3D 模型請用「3D 角色 → 匯入」',5000)});
+}
 if(!PLAYER){
   const box=document.getElementById('srcList');
   box.addEventListener('change',e=>{const r=e.target.closest('.srow');if(!r||!e.target.classList.contains('sname'))return;const v=e.target.value.trim();if(!v)return renderSrcPanel();
@@ -2414,6 +2485,8 @@ if(!PLAYER){
   box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('sname'))e.target.blur()});
   box.addEventListener('click',async e=>{const b=e.target.closest('.sbtn');if(!b)return;const k=b.closest('.srow').dataset.k;
     if(b.dataset.a==='page'){const doc=isDocKey(k);doc?addDocSlide(k):addLiveSlide(k);renderSrcPanel();toast('已新增'+(doc?'文件頁':'資料頁')+'：「'+srcName(k)+'」'+(srcStat[k]==='err'?'（目前讀不到，'+(srcErr[k]||'請檢查連結')+'）':''),5000);return}
+    if(isFileKey(k)&&b.dataset.a==='open'){toast('這是電腦裡的檔案（'+(S.srcs[k].fname||'')+'），沒有網址可以開',4000);return}
+    if(isFileKey(k)&&b.dataset.a==='url'){pickFile(k);return}
     if(b.dataset.a==='open'){window.open(srcUrl(k),'_blank','noopener');return}
     if(b.dataset.a==='url'){const u=prompt('貼上新的 Google 試算表連結：',srcUrl(k));if(!u||u.trim()===srcUrl(k))return;if(isDocUrl(u)?!docIdOf(u):!sheetId(u)){toast('連結格式不對',4000);return}if(isDocUrl(u)!==isDocKey(k)){toast('試算表和 Google 文件不能互換，請另外「新增資料來源」',5000);return}
       setSrcUrl(k,u.trim());delete sig[k];saveS();toast('正在讀取…',0);await refreshData();renderSrcPanel();toast(srcStat[k]==='ok'?'已更換連結':'⚠️ '+(srcErr[k]||'讀取失敗，請檢查共用設定'),5000);return}
@@ -2954,6 +3027,56 @@ function aiErr(e){if(e instanceof AIError)return e.message;const A=ANT;
   return(e&&e.message)||String(e)}
 function addPdfSlide(id){const sid='n'+Date.now().toString(36);const f=pageFrom('pdf',id);S.added[sid]={from:f};const el=makeSlide(sid,f);
   slides[cur].after(el);prepSlide(el);afterStructure(cur+1,1)}
+/* ---------------- AI 插圖頁 ----------------
+   工具列「AI 插圖」：用使用者自己的 Gemini 或 ChatGPT（OpenAI）金鑰產生一張圖，新增一頁插圖頁（pageFrom('img', id)）。Claude 不能產生圖片。
+   圖片太大，不放進 S：說明存在 S.imgs[id]，圖片（JPEG data URL）存在 IndexedDB sheet-deck-images／i 與 IMGMEM；匯出 HTML 時烘進 <html data-imgs>。
+   要求一律經過 httpJSON()（5xx 會自動重試）。模型用金鑰查得到的最新圖片模型，查不到才用預設值。 */
+const IMGMEM={};function imgDB(op,k,v){return idbOp('sheet-deck-images','i',op,k,v)}
+(function(){const baked=document.documentElement.dataset.imgs;if(baked)try{Object.assign(IMGMEM,JSON.parse(baked))}catch(e){}})();
+function imgPgHTML(id){const m=(S.imgs||{})[id]||{title:'AI 插圖',prompt:'',by:'AI',at:''};
+  return `<section class="slide imgpg" data-deco="content" data-img="${escH(id)}"><div class="deco"></div>
+  <div class="hd"><div class="hn a z" data-ed>＋</div><div><h2 class="a l" style="--d:.1s" data-ed>${escH(m.title)}</h2><p class="a l" style="--d:.25s" data-ed>AI 插圖</p></div></div>
+  <figure class="card imgbox a" style="--d:.45s"><img alt="${escH(m.prompt)}"></figure>
+  <div class="srcline">圖片由 ${escH(m.by)} 依描述產生（${escH(m.at)}）：${escH(m.prompt)}</div></section>`}
+/* 插圖頁的圖片從 IMGMEM 或瀏覽器資料庫補上（頁面 HTML 裡不放圖片資料，匯出才不會存兩份） */
+function loadImgs(){allSlides().filter(s=>s.dataset.img).forEach(s=>{const id=s.dataset.img,im=s.querySelector('.imgbox img');if(!im||im.getAttribute('src'))return;
+  if(IMGMEM[id]){im.src=IMGMEM[id];return}
+  imgDB('get',id).then(u=>{if(u){IMGMEM[id]=u;im.src=u;thumbsLater()}})})}
+function addImgSlide(id){const sid='n'+Date.now().toString(36);const f=pageFrom('img',id);S.added[sid]={from:f};const el=makeSlide(sid,f);
+  slides[cur].after(el);prepSlide(el);loadImgs();afterStructure(cur+1,1)}
+const IMG_STYLE='這是 16:9 橫式簡報用的插圖：畫面乾淨、主體清楚、留一點空白，不要出現任何文字、字母、數字、標誌或浮水印。';
+async function imgModel(p,key){const ck=LS+'img-model:'+p,c=lsGet(ck);if(c)return c;let m='';
+  try{if(p==='gemini'){const j=await httpJSON(p,'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000',{headers:{'x-goog-api-key':key}});
+      m=(j.models||[]).map(x=>x.name.replace(/^models\//,'')).filter(id=>/^gemini-.*image/i.test(id)&&!/(preview|exp)/i.test(id)).sort((a,b)=>b.localeCompare(a,'en',{numeric:true}))[0]||''}
+    else{const j=await httpJSON(p,'https://api.openai.com/v1/models',{headers:{Authorization:'Bearer '+key}});
+      m=(j.data||[]).map(x=>x.id).filter(id=>/^gpt-image-\d/.test(id)&&!/-\d{4}-\d{2}/.test(id)).sort((a,b)=>b.localeCompare(a,'en',{numeric:true}))[0]||''}}catch(e){if(e&&e.status&&e.status<500)throw e}
+  m=m||(p==='gemini'?'gemini-2.5-flash-image':'gpt-image-1');lsSet(ck,m);return m}
+async function genImage(p,key,desc,note){const model=await imgModel(p,key),full=desc+'\n\n'+IMG_STYLE;
+  try{
+    if(p==='gemini'){const j=await httpJSON(p,`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':key},
+        body:JSON.stringify({contents:[{role:'user',parts:[{text:full}]}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:'16:9'}}})},note);
+      const c=(j.candidates||[])[0],part=((c&&c.content&&c.content.parts)||[]).find(x=>x.inlineData||x.inline_data);
+      if(!part)throw new AIError('Gemini 沒有產生圖片'+(c&&c.finishReason?'（'+c.finishReason+'）':j.promptFeedback&&j.promptFeedback.blockReason?'（'+j.promptFeedback.blockReason+'）':'')+'，請換個描述再試');
+      const d=part.inlineData||part.inline_data;return{url:'data:'+(d.mimeType||d.mime_type||'image/png')+';base64,'+d.data,model}}
+    const j=await httpJSON(p,'https://api.openai.com/v1/images/generations',{method:'POST',headers:{'content-type':'application/json',Authorization:'Bearer '+key},
+      body:JSON.stringify({model,prompt:full,size:'1536x1024',n:1})},note);
+    const b=j.data&&j.data[0];if(!b||!b.b64_json)throw new AIError('ChatGPT 沒有產生圖片，請換個描述再試');return{url:'data:image/png;base64,'+b.b64_json,model}}
+  catch(e){if(e&&e.status===404)lsSet(LS+'img-model:'+p,'');throw e}}
+/* 轉成 1600 寬的 JPEG：PNG 原圖常有 2～3 MB，存檔和匯出會很肥 */
+function shrinkImg(url){return new Promise(ok=>{const im=new Image();im.onload=()=>{const w=Math.min(1600,im.naturalWidth),h=Math.round(im.naturalHeight*w/im.naturalWidth),c=document.createElement('canvas');c.width=w;c.height=h;
+  c.getContext('2d').drawImage(im,0,0,w,h);try{ok(c.toDataURL('image/jpeg',.88))}catch(e){ok(url)}};im.onerror=()=>ok(url);im.src=url})}
+loadImgs();
+if(!PLAYER)document.getElementById('bImg').onclick=async()=>{
+  const can=['gemini','openai'].filter(p=>keyOf(p)),p=can.includes(provNow())?provNow():can[0];
+  if(!p){openTab('doc');toast('AI 插圖要用 Gemini 或 ChatGPT 的金鑰（Claude 不能畫圖）：請先在右側「文件」分頁選 Gemini 或 ChatGPT，貼上金鑰',7000);return}
+  const desc=String(prompt('想要什麼樣的插圖？用一兩句話描述畫面（例如：一座由程式碼長成的花園，園丁正在修剪枝葉）\n圖片會用 '+AIP[p].name+' 產生，費用算在你的金鑰上。','')||'').trim();if(!desc)return;
+  const b=document.getElementById('bImg');b.classList.add('busy');toast(AIP[p].name+' 正在畫圖…（大約 10～40 秒）',0);
+  try{const out=await genImage(p,keyOf(p),desc,m=>toast(m,0)),url=await shrinkImg(out.url),id='i'+Date.now().toString(36);
+    IMGMEM[id]=url;await imgDB('put',id,url);
+    (S.imgs=S.imgs||{})[id]={title:desc.length>20?desc.slice(0,20)+'…':desc,prompt:desc,by:AIP[p].name+'（'+out.model+'）',at:new Date().toLocaleDateString('zh-TW')};
+    addImgSlide(id);toast('已新增插圖頁。標題可以直接點投影片修改',5000)}
+  catch(e){toast('⚠️ '+aiErr(e),8000)}
+  finally{b.classList.remove('busy')}};
 
 /* ---------------- keynote-style shell ---------------- */
 if(!PLAYER){

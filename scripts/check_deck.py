@@ -85,7 +85,7 @@ def check(path, h):
         lineno = h.count('\n', 0, mm.start()) + 1
         errs.append(f'{path}:{lineno}：自己開啟 IndexedDB。規則：瀏覽器資料庫一律經過 idbOp(資料庫, 資料表, 動作, 鍵, 值)。修法：改成呼叫 idbOp()，或像 fbxDB()／snapDB() 那樣包一層。')
     # 新增頁來源字串（'live:…'、'pdf:…'、'doc:…'）會存進使用者存檔：組字串用 pageFrom()、拆字串用 parseFrom()
-    for mm in re.finditer(r"""['"`](live|pdf|doc):""", h):
+    for mm in re.finditer(r"""['"`](live|pdf|doc|img):""", h):
         line_start = h.rfind('\n', 0, mm.start()) + 1
         line = h[line_start:h.find('\n', mm.start())]
         if re.match(r'\s*(/\*|\*|//)', line):  # 註解裡的說明

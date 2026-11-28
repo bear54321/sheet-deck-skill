@@ -32,5 +32,6 @@
 - three.js（MIT）
 - html2canvas（MIT）
 - PptxGenJS（MIT）
+- SheetJS Community Edition（Apache-2.0，只在匯入 Excel 檔時載入）
 - Anthropic TypeScript SDK（MIT，只在使用 Claude 做 PDF 摘要時載入）
 - Google Fonts：Noto Sans TC、Noto Serif TC、LXGW WenKai TC（SIL Open Font License 1.1）
