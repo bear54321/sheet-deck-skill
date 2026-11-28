@@ -12,6 +12,18 @@
 
 因此，**這 15 種風格不可用於商業用途**（例如販售、付費接案）。若要商用，請先取得 Lemomo 的同意，或在範本中移除這 15 種風格，只保留預設的「珊瑚扁平」。
 
+## 版型的外觀參考
+
+以下版型的**外觀**（配色、字型氣質、版面構圖）參考自 OpenDesign 內附的簡報範本；程式碼（`assets/template.html` 裡的 CSS、`cyDeco()`／`grDeco()`／`cbDeco()`／`znDeco()`／`obDeco()`）全部重新寫，沒有複製原範本的 CSS、HTML、圖片或文字。
+
+- **鈷藍格線、復古小誌、8-bit 軌道**：參考 Zara Zhang 的 beautiful-html-templates（`cobalt-grid`、`retro-zine`、`8-bit-orbit`），https://github.com/zarazhangrui/beautiful-html-templates ，MIT 授權，Copyright (c) 2026 Zara Zhang。
+- **賽博終端機、深色知識圖譜**：參考 lewislulu/html-ppt-skill 的 `hermes-cyber-terminal`、`graphify-dark-graph`，https://github.com/lewislulu/html-ppt-skill 。本機的 OpenDesign 副本沒有附授權檔，所以只參考外觀、不使用任何原始碼。
+
+- **數位金融瑞士風、田野筆記報告風**：參考 OpenDesign 內附的 `digits-fintech-swiss-template`、`field-notes-editorial-template`。這兩份範本沒有註明出處或授權，所以只參考外觀、不使用任何原始碼。
+- **復古 Windows**：參考 Zara Zhang 的 beautiful-html-templates（`retro-windows`），MIT 授權，出處同上。視窗、圖示、游標都是重新畫的簡單幾何圖形，沒有使用微軟的圖示或字型。
+
+「墨金」版型是原創，沒有參考特定範本。
+
 ## 執行時載入的外部資源（不包含在本資料夾）
 
 簡報打開時會從網路載入以下資源，各自依其授權使用：
